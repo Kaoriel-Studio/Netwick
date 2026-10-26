@@ -1,0 +1,18 @@
+version: 2
+updates:
+  - package-ecosystem: gomod
+    directory: "/"
+    schedule:
+      interval: weekly
+    ignore:
+      - dependency-name: "github.com/wailsapp/wails/v3"
+  - package-ecosystem: npm
+    directory: "/frontend"
+    schedule:
+      interval: weekly
+    ignore:
+      - dependency-name: "@wailsio/runtime"
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: monthly

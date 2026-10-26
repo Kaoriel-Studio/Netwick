@@ -1,0 +1,56 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+jobs:
+  release:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - name: Install Wails CLI
+        run: go install github.com/wailsapp/wails/v3/cmd/wails3@v3.0.0-beta.34
+      - name: Test
+        run: |
+          (cd frontend && npm ci && npm run build && npm test)
+          go test ./...
+      - name: Build
+        run: wails3 build GOOS=windows VERSION=${GITHUB_REF_NAME#v}
+      - name: Checksums
+        working-directory: bin
+        run: shasum -a 256 netwick.exe > SHA256SUMS
+      - uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: bin/netwick.exe
+      - name: Draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          SUM=$(cut -d' ' -f1 bin/SHA256SUMS)
+          cat > notes.md <<NOTES
+          > Netwick isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.
+
+          **Netwick не связан с Riot Games. Программа не трогает игру и античит, не просит пароль и работает только с настройками Windows.**
+
+          See CHANGELOG.md for changes.
+
+          SHA256: \`$SUM\`
+
+          - VirusTotal: https://www.virustotal.com/gui/file/$SUM
+          - Verify build provenance: \`gh attestation verify netwick.exe --repo ${GITHUB_REPOSITORY}\`
+          - First launch: SmartScreen → "More info" → "Run anyway".
+          NOTES
+          gh release create "$GITHUB_REF_NAME" bin/netwick.exe bin/SHA256SUMS --draft --title "Netwick $GITHUB_REF_NAME" --notes-file notes.md

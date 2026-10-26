@@ -1,0 +1,149 @@
+{
+  "vpnPatterns": [
+    "vpn",
+    "tap-windows",
+    "tap adapter",
+    "wireguard",
+    "openvpn",
+    "wintun",
+    "hamachi",
+    "zerotier",
+    "tailscale",
+    "nordlynx",
+    "proton",
+    "expressvpn",
+    "surfshark",
+    "radmin",
+    "softether",
+    "fortinet",
+    "cisco anyconnect",
+    "globalprotect"
+  ],
+  "networkHogs": [
+    {
+      "process": "qbittorrent.exe",
+      "name": "qBittorrent"
+    },
+    {
+      "process": "utorrent.exe",
+      "name": "uTorrent"
+    },
+    {
+      "process": "bittorrent.exe",
+      "name": "BitTorrent"
+    },
+    {
+      "process": "transmission-qt.exe",
+      "name": "Transmission"
+    },
+    {
+      "process": "deluge.exe",
+      "name": "Deluge"
+    },
+    {
+      "process": "tixati.exe",
+      "name": "Tixati"
+    },
+    {
+      "process": "biglybt.exe",
+      "name": "BiglyBT"
+    },
+    {
+      "process": "steam.exe",
+      "name": "Steam"
+    },
+    {
+      "process": "epicgameslauncher.exe",
+      "name": "Epic Games Launcher"
+    },
+    {
+      "process": "battle.net.exe",
+      "name": "Battle.net"
+    },
+    {
+      "process": "eadesktop.exe",
+      "name": "EA app"
+    },
+    {
+      "process": "ubisoftconnect.exe",
+      "name": "Ubisoft Connect"
+    },
+    {
+      "process": "galaxyclient.exe",
+      "name": "GOG Galaxy"
+    },
+    {
+      "process": "onedrive.exe",
+      "name": "OneDrive"
+    },
+    {
+      "process": "dropbox.exe",
+      "name": "Dropbox"
+    },
+    {
+      "process": "googledrivefs.exe",
+      "name": "Google Drive"
+    }
+  ],
+  "incompatibleDrivers": [
+    {
+      "file": "iastorvd.sys",
+      "vendor": "Intel VMD / RST"
+    },
+    {
+      "file": "secnvme.sys",
+      "vendor": "Samsung NVMe"
+    },
+    {
+      "file": "solidnvm.sys",
+      "vendor": "Solidigm NVMe"
+    },
+    {
+      "file": "asstahci64.sys",
+      "vendor": "ASMedia SATA"
+    },
+    {
+      "file": "mtkwl6ex.sys",
+      "vendor": "MediaTek RZ616",
+      "minVersion": "3.5"
+    }
+  ],
+  "vmIndicators": [
+    "vmware",
+    "virtualbox",
+    "vbox",
+    "qemu",
+    "kvm",
+    "xen",
+    "parallels",
+    "bochs",
+    "virtual machine",
+    "hyper-v"
+  ],
+  "freeSpaceWarnGB": 30,
+  "sensitivity": {
+    "note": "community",
+    "games": [
+      {
+        "id": "valorant",
+        "name": "VALORANT",
+        "yaw": 0.07
+      },
+      {
+        "id": "cs2",
+        "name": "Counter-Strike 2",
+        "yaw": 0.022
+      },
+      {
+        "id": "apex",
+        "name": "Apex Legends",
+        "yaw": 0.022
+      },
+      {
+        "id": "overwatch2",
+        "name": "Overwatch 2",
+        "yaw": 0.0066
+      }
+    ]
+  }
+}

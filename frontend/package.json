@@ -1,0 +1,20 @@
+{
+  "name": "netwick-frontend",
+  "private": true,
+  "version": "2.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "lint": "node scripts/lint-security.mjs && node scripts/check-i18n.mjs && tsc --noEmit",
+    "build:dev": "npm run lint && vite build --minify false --mode development",
+    "build": "npm run lint && vite build --mode production",
+    "test": "node scripts/check-dist.mjs"
+  },
+  "dependencies": {
+    "@wailsio/runtime": "3.0.0-beta.34"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "vite": "8.3.5"
+  }
+}

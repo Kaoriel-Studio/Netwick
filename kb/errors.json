@@ -1,0 +1,3386 @@
+[
+  {
+    "code": "VAN: RESTRICTION",
+    "aliases": [
+      "RESTRICTION",
+      "VANRESTRICTION"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Нужны обновления или защита Windows",
+      "en": "Windows update or security feature required"
+    },
+    "explain": {
+      "ru": "Для игры нужна более новая Windows или включённая функция безопасности (TPM 2.0, безопасная загрузка, изоляция ядра, IOMMU).",
+      "en": "The game needs a newer Windows or a security feature turned on (TPM 2.0, Secure Boot, Memory Integrity, IOMMU)."
+    },
+    "steps": [
+      {
+        "kind": "check",
+        "id": "C02"
+      },
+      {
+        "kind": "check",
+        "id": "C04"
+      },
+      {
+        "kind": "check",
+        "id": "C05"
+      },
+      {
+        "kind": "check",
+        "id": "C06"
+      },
+      {
+        "kind": "check",
+        "id": "C07"
+      },
+      {
+        "kind": "guide",
+        "id": "G06"
+      },
+      {
+        "kind": "guide",
+        "id": "G03"
+      },
+      {
+        "kind": "guide",
+        "id": "G04"
+      },
+      {
+        "kind": "info",
+        "id": "reboot"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/penalties/error-van-restriction",
+    "verifiedAt": "2026-05-29",
+    "ported": true
+  },
+  {
+    "code": "VAN: RESTRICTION: 1",
+    "aliases": [
+      "RESTRICTION 1",
+      "RESTRICTION: 1",
+      "VANRESTRICTION1"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Безопасная загрузка не подтверждена",
+      "en": "Secure Boot not confirmed"
+    },
+    "explain": {
+      "ru": "Защита не смогла подтвердить, что безопасная загрузка (Secure Boot) включена. Включите её и обновите BIOS.",
+      "en": "Vanguard could not confirm that Secure Boot is on. Turn it on and update the BIOS."
+    },
+    "steps": [
+      {
+        "kind": "check",
+        "id": "C05"
+      },
+      {
+        "kind": "guide",
+        "id": "G03"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/penalties/error-van-restriction-1",
+    "verifiedAt": "2026-06-24",
+    "ported": true
+  },
+  {
+    "code": "VAN: RESTRICTION: 3",
+    "aliases": [
+      "RESTRICTION 3",
+      "RESTRICTION: 3",
+      "VANRESTRICTION3"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ошибка защиты Vanguard",
+      "en": "Vanguard error"
+    },
+    "explain": {
+      "ru": "Подробных шагов для этого кода в Netwick пока нет. Откройте официальную статью Riot — там описано, что делать.",
+      "en": "Netwick does not have detailed steps for this code yet. Open the official Riot article to see what to do."
+    },
+    "steps": [
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/penalties/error-van-restriction-3",
+    "verifiedAt": "2026-05-22",
+    "ported": false
+  },
+  {
+    "code": "VAN: RESTRICTION: 4",
+    "aliases": [
+      "RESTRICTION 4",
+      "RESTRICTION: 4",
+      "VANRESTRICTION4"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ошибка защиты Vanguard",
+      "en": "Vanguard error"
+    },
+    "explain": {
+      "ru": "Подробных шагов для этого кода в Netwick пока нет. Откройте официальную статью Riot — там описано, что делать.",
+      "en": "Netwick does not have detailed steps for this code yet. Open the official Riot article to see what to do."
+    },
+    "steps": [
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/penalties/error-van-restriction-4",
+    "verifiedAt": "2026-05-22",
+    "ported": false
+  },
+  {
+    "code": "VAN: RESTRICTION: 5",
+    "aliases": [
+      "RESTRICTION 5",
+      "RESTRICTION: 5",
+      "VANRESTRICTION5"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ошибка защиты Vanguard",
+      "en": "Vanguard error"
+    },
+    "explain": {
+      "ru": "Подробных шагов для этого кода в Netwick пока нет. Откройте официальную статью Riot — там описано, что делать.",
+      "en": "Netwick does not have detailed steps for this code yet. Open the official Riot article to see what to do."
+    },
+    "steps": [
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/penalties/error-van-restriction-5",
+    "verifiedAt": "2026-05-22",
+    "ported": false
+  },
+  {
+    "code": "VAN: Incompatible Software",
+    "aliases": [
+      "Incompatible Software",
+      "VANIncompatibleSoftware"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Несовместимая программа",
+      "en": "Incompatible software"
+    },
+    "explain": {
+      "ru": "Сообщение называет конкретный файл драйвера. Удалите программу, которая его установила, и перезагрузите компьютер.",
+      "en": "The message names a specific driver file. Uninstall the program that installed it and restart the computer."
+    },
+    "steps": [
+      {
+        "kind": "info",
+        "id": "uninstall_driver_software"
+      },
+      {
+        "kind": "info",
+        "id": "reboot"
+      },
+      {
+        "kind": "info",
+        "id": "delete_sys"
+      },
+      {
+        "kind": "fix",
+        "id": "F04"
+      },
+      {
+        "kind": "guide",
+        "id": "G08"
+      },
+      {
+        "kind": "guide",
+        "id": "G01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van-incompatible-software",
+    "verifiedAt": "2026-01-27",
+    "ported": true
+  },
+  {
+    "code": "VAN: STATUS_VMD_9001",
+    "aliases": [
+      "STATUS_VMD_9001",
+      "VANSTATUS_VMD_9001"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Несовместимый драйвер Intel RST",
+      "en": "Incompatible Intel RST driver"
+    },
+    "explain": {
+      "ru": "Драйвер Intel RST/VMD мешает защите Vanguard. Его нужно заменить по инструкции Riot.",
+      "en": "The Intel RST/VMD driver interferes with Vanguard. Replace it following the Riot guide."
+    },
+    "steps": [
+      {
+        "kind": "check",
+        "id": "C15"
+      },
+      {
+        "kind": "guide",
+        "id": "G07"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van-status-vmd-9001",
+    "verifiedAt": "2026-07-17",
+    "ported": true
+  },
+  {
+    "code": "VAN: Incompatible OEM Driver",
+    "aliases": [
+      "Incompatible OEM Driver",
+      "VANIncompatibleOEMDriver"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Несовместимый драйвер производителя",
+      "en": "Incompatible OEM driver"
+    },
+    "explain": {
+      "ru": "Один из драйверов дисков или Wi-Fi несовместим с защитой Vanguard. Его нужно заменить или обновить.",
+      "en": "One of the disk or Wi-Fi drivers is incompatible with Vanguard. It needs to be replaced or updated."
+    },
+    "steps": [
+      {
+        "kind": "check",
+        "id": "C15"
+      },
+      {
+        "kind": "guide",
+        "id": "G07"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/van-incompatible-oem-driver",
+    "verifiedAt": "2026-07-17",
+    "ported": true
+  },
+  {
+    "code": "VAN: STATUS_SB_POLICY",
+    "aliases": [
+      "STATUS_SB_POLICY",
+      "VANSTATUS_SB_POLICY"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ключи безопасной загрузки",
+      "en": "Secure Boot keys"
+    },
+    "explain": {
+      "ru": "Ключи безопасной загрузки нужно сбросить к стандартным в настройках компьютера (BIOS).",
+      "en": "Secure Boot keys need to be reset to defaults in your computer settings (BIOS)."
+    },
+    "steps": [
+      {
+        "kind": "guide",
+        "id": "G03"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van-status-sb-policy",
+    "verifiedAt": "2026-07-17",
+    "ported": true
+  },
+  {
+    "code": "VAN Missing -117",
+    "aliases": [
+      "Missing -117",
+      "VANMissing-117"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ошибка защиты Vanguard",
+      "en": "Vanguard error"
+    },
+    "explain": {
+      "ru": "Подробных шагов для этого кода в Netwick пока нет. Откройте официальную статью Riot — там описано, что делать.",
+      "en": "Netwick does not have detailed steps for this code yet. Open the official Riot article to see what to do."
+    },
+    "steps": [
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van-missing--117",
+    "verifiedAt": "2026-05-22",
+    "ported": false
+  },
+  {
+    "code": "VAN -104",
+    "aliases": [
+      "-104",
+      "104",
+      "VAN-104"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ошибка защиты Vanguard",
+      "en": "Vanguard error"
+    },
+    "explain": {
+      "ru": "Подробных шагов для этого кода в Netwick пока нет. Откройте официальную статью Riot — там описано, что делать.",
+      "en": "Netwick does not have detailed steps for this code yet. Open the official Riot article to see what to do."
+    },
+    "steps": [
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van--104",
+    "verifiedAt": "2026-05-22",
+    "ported": false
+  },
+  {
+    "code": "VAN -102",
+    "aliases": [
+      "-102",
+      "102",
+      "VAN-102"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ошибка защиты Vanguard",
+      "en": "Vanguard error"
+    },
+    "explain": {
+      "ru": "Подробных шагов для этого кода в Netwick пока нет. Откройте официальную статью Riot — там описано, что делать.",
+      "en": "Netwick does not have detailed steps for this code yet. Open the official Riot article to see what to do."
+    },
+    "steps": [
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van--102",
+    "verifiedAt": "2026-05-22",
+    "ported": false
+  },
+  {
+    "code": "VAN -101",
+    "aliases": [
+      "-101",
+      "101",
+      "VAN-101"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ошибка защиты Vanguard",
+      "en": "Vanguard error"
+    },
+    "explain": {
+      "ru": "Подробных шагов для этого кода в Netwick пока нет. Откройте официальную статью Riot — там описано, что делать.",
+      "en": "Netwick does not have detailed steps for this code yet. Open the official Riot article to see what to do."
+    },
+    "steps": [
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van--101",
+    "verifiedAt": "2026-05-22",
+    "ported": false
+  },
+  {
+    "code": "VAN -92",
+    "aliases": [
+      "-92",
+      "92",
+      "VAN-92"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ошибка защиты Vanguard",
+      "en": "Vanguard error"
+    },
+    "explain": {
+      "ru": "Подробных шагов для этого кода в Netwick пока нет. Откройте официальную статью Riot — там описано, что делать.",
+      "en": "Netwick does not have detailed steps for this code yet. Open the official Riot article to see what to do."
+    },
+    "steps": [
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van--92",
+    "verifiedAt": "2026-05-22",
+    "ported": false
+  },
+  {
+    "code": "VAN -83",
+    "aliases": [
+      "-83",
+      "83",
+      "VAN-83"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ошибка защиты Vanguard",
+      "en": "Vanguard error"
+    },
+    "explain": {
+      "ru": "Подробных шагов для этого кода в Netwick пока нет. Откройте официальную статью Riot — там описано, что делать.",
+      "en": "Netwick does not have detailed steps for this code yet. Open the official Riot article to see what to do."
+    },
+    "steps": [
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van--83",
+    "verifiedAt": "2026-05-22",
+    "ported": false
+  },
+  {
+    "code": "VAN -81",
+    "aliases": [
+      "-81",
+      "81",
+      "VAN-81"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Защита Vanguard не запустилась",
+      "en": "Vanguard failed to start"
+    },
+    "explain": {
+      "ru": "Защита Vanguard не смогла запуститься или отключилась. Обычно помогает перезагрузка и проверка времени.",
+      "en": "Vanguard could not start or disconnected. A restart and a time check usually help."
+    },
+    "steps": [
+      {
+        "kind": "info",
+        "id": "reboot"
+      },
+      {
+        "kind": "check",
+        "id": "C03"
+      },
+      {
+        "kind": "fix",
+        "id": "F07"
+      },
+      {
+        "kind": "guide",
+        "id": "G01"
+      },
+      {
+        "kind": "guide",
+        "id": "G02"
+      },
+      {
+        "kind": "guide",
+        "id": "G11"
+      },
+      {
+        "kind": "guide",
+        "id": "G10"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van--81",
+    "verifiedAt": "2026-07-10",
+    "ported": true
+  },
+  {
+    "code": "VAN -79",
+    "aliases": [
+      "-79",
+      "79",
+      "VAN-79"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ошибка защиты Vanguard",
+      "en": "Vanguard error"
+    },
+    "explain": {
+      "ru": "Подробных шагов для этого кода в Netwick пока нет. Откройте официальную статью Riot — там описано, что делать.",
+      "en": "Netwick does not have detailed steps for this code yet. Open the official Riot article to see what to do."
+    },
+    "steps": [
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van--79",
+    "verifiedAt": "2026-05-22",
+    "ported": false
+  },
+  {
+    "code": "VAN -72",
+    "aliases": [
+      "-72",
+      "72",
+      "VAN-72"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ошибка защиты Vanguard",
+      "en": "Vanguard error"
+    },
+    "explain": {
+      "ru": "Подробных шагов для этого кода в Netwick пока нет. Откройте официальную статью Riot — там описано, что делать.",
+      "en": "Netwick does not have detailed steps for this code yet. Open the official Riot article to see what to do."
+    },
+    "steps": [
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van--72",
+    "verifiedAt": "2026-05-22",
+    "ported": false
+  },
+  {
+    "code": "VAN -1",
+    "aliases": [
+      "-1",
+      "1",
+      "VAN-1"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ошибка защиты Vanguard",
+      "en": "Vanguard error"
+    },
+    "explain": {
+      "ru": "Подробных шагов для этого кода в Netwick пока нет. Откройте официальную статью Riot — там описано, что делать.",
+      "en": "Netwick does not have detailed steps for this code yet. Open the official Riot article to see what to do."
+    },
+    "steps": [
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van--1",
+    "verifiedAt": "2026-05-22",
+    "ported": false
+  },
+  {
+    "code": "VAN 0",
+    "aliases": [
+      "0",
+      "VAN-0",
+      "VAN0"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ошибка защиты Vanguard",
+      "en": "Vanguard error"
+    },
+    "explain": {
+      "ru": "Подробных шагов для этого кода в Netwick пока нет. Откройте официальную статью Riot — там описано, что делать.",
+      "en": "Netwick does not have detailed steps for this code yet. Open the official Riot article to see what to do."
+    },
+    "steps": [
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van-0",
+    "verifiedAt": "2026-05-22",
+    "ported": false
+  },
+  {
+    "code": "VAN 6",
+    "aliases": [
+      "6",
+      "VAN-6",
+      "VAN6"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ошибка защиты Vanguard",
+      "en": "Vanguard error"
+    },
+    "explain": {
+      "ru": "Подробных шагов для этого кода в Netwick пока нет. Откройте официальную статью Riot — там описано, что делать.",
+      "en": "Netwick does not have detailed steps for this code yet. Open the official Riot article to see what to do."
+    },
+    "steps": [
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van-6",
+    "verifiedAt": "2026-05-22",
+    "ported": false
+  },
+  {
+    "code": "VAN 25",
+    "aliases": [
+      "25",
+      "VAN-25",
+      "VAN25"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ошибка защиты Vanguard",
+      "en": "Vanguard error"
+    },
+    "explain": {
+      "ru": "Подробных шагов для этого кода в Netwick пока нет. Откройте официальную статью Riot — там описано, что делать.",
+      "en": "Netwick does not have detailed steps for this code yet. Open the official Riot article to see what to do."
+    },
+    "steps": [
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van-25",
+    "verifiedAt": "2026-05-22",
+    "ported": false
+  },
+  {
+    "code": "VAN 57",
+    "aliases": [
+      "57",
+      "VAN-57",
+      "VAN57"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Защита Vanguard не инициализирована",
+      "en": "Vanguard is not initialized"
+    },
+    "explain": {
+      "ru": "Защита Vanguard не успела запуститься. Её служба должна стартовать вместе с Windows.",
+      "en": "Vanguard did not start in time. Its service needs to start together with Windows."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F07"
+      },
+      {
+        "kind": "info",
+        "id": "reboot"
+      },
+      {
+        "kind": "guide",
+        "id": "G01"
+      },
+      {
+        "kind": "guide",
+        "id": "G02"
+      },
+      {
+        "kind": "guide",
+        "id": "G11"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van-57",
+    "verifiedAt": "2026-07-08",
+    "ported": true
+  },
+  {
+    "code": "VAN 59",
+    "aliases": [
+      "59",
+      "VAN-59",
+      "VAN59"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ошибка защиты Vanguard",
+      "en": "Vanguard error"
+    },
+    "explain": {
+      "ru": "Подробных шагов для этого кода в Netwick пока нет. Откройте официальную статью Riot — там описано, что делать.",
+      "en": "Netwick does not have detailed steps for this code yet. Open the official Riot article to see what to do."
+    },
+    "steps": [
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van-59",
+    "verifiedAt": "2026-05-22",
+    "ported": false
+  },
+  {
+    "code": "VAN 68",
+    "aliases": [
+      "68",
+      "VAN-68",
+      "VAN68"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Защита Vanguard потеряла соединение",
+      "en": "Vanguard lost its connection"
+    },
+    "explain": {
+      "ru": "Защита Vanguard потеряла связь с серверами. Обычно помогает перезагрузка и проверка времени на компьютере.",
+      "en": "Vanguard lost its connection to the servers. A restart and a clock check usually help."
+    },
+    "steps": [
+      {
+        "kind": "info",
+        "id": "reboot"
+      },
+      {
+        "kind": "check",
+        "id": "C03"
+      },
+      {
+        "kind": "fix",
+        "id": "F07"
+      },
+      {
+        "kind": "guide",
+        "id": "G01"
+      },
+      {
+        "kind": "guide",
+        "id": "G02"
+      },
+      {
+        "kind": "guide",
+        "id": "G11"
+      },
+      {
+        "kind": "fix",
+        "id": "F09"
+      },
+      {
+        "kind": "guide",
+        "id": "G10"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van-68",
+    "verifiedAt": "2026-07-16",
+    "ported": true
+  },
+  {
+    "code": "VAN 84",
+    "aliases": [
+      "84",
+      "VAN-84",
+      "VAN84"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ошибка защиты Vanguard",
+      "en": "Vanguard error"
+    },
+    "explain": {
+      "ru": "Подробных шагов для этого кода в Netwick пока нет. Откройте официальную статью Riot — там описано, что делать.",
+      "en": "Netwick does not have detailed steps for this code yet. Open the official Riot article to see what to do."
+    },
+    "steps": [
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van-84",
+    "verifiedAt": "2026-05-22",
+    "ported": false
+  },
+  {
+    "code": "VAN 128",
+    "aliases": [
+      "128",
+      "VAN-128",
+      "VAN128"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Не пройдена проверка при запуске",
+      "en": "Startup check failed"
+    },
+    "explain": {
+      "ru": "Защита Vanguard не прошла проверку при запуске. Обычно помогает вернуть стандартные настройки безопасности Windows.",
+      "en": "Vanguard failed its startup check. Restoring default Windows security settings usually helps."
+    },
+    "steps": [
+      {
+        "kind": "guide",
+        "id": "G05"
+      },
+      {
+        "kind": "fix",
+        "id": "F08"
+      },
+      {
+        "kind": "guide",
+        "id": "G06"
+      },
+      {
+        "kind": "fix",
+        "id": "F07"
+      },
+      {
+        "kind": "guide",
+        "id": "G01"
+      },
+      {
+        "kind": "guide",
+        "id": "G02"
+      },
+      {
+        "kind": "guide",
+        "id": "G11"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van-128",
+    "verifiedAt": "2025-03-14",
+    "ported": true
+  },
+  {
+    "code": "VAN 133",
+    "aliases": [
+      "133",
+      "VAN-133",
+      "VAN133"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ошибка защиты Vanguard",
+      "en": "Vanguard error"
+    },
+    "explain": {
+      "ru": "Подробных шагов для этого кода в Netwick пока нет. Откройте официальную статью Riot — там описано, что делать.",
+      "en": "Netwick does not have detailed steps for this code yet. Open the official Riot article to see what to do."
+    },
+    "steps": [
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van-133",
+    "verifiedAt": "2026-05-22",
+    "ported": false
+  },
+  {
+    "code": "VAN 135",
+    "aliases": [
+      "135",
+      "VAN-135",
+      "VAN135"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ошибка защиты Vanguard",
+      "en": "Vanguard error"
+    },
+    "explain": {
+      "ru": "Подробных шагов для этого кода в Netwick пока нет. Откройте официальную статью Riot — там описано, что делать.",
+      "en": "Netwick does not have detailed steps for this code yet. Open the official Riot article to see what to do."
+    },
+    "steps": [
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van-135",
+    "verifiedAt": "2026-05-22",
+    "ported": false
+  },
+  {
+    "code": "VAN 138",
+    "aliases": [
+      "138",
+      "VAN-138",
+      "VAN138"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Запуск в виртуальной машине",
+      "en": "Running in a virtual machine"
+    },
+    "explain": {
+      "ru": "Игра не работает внутри виртуальной машины. Нужна обычная Windows на настоящем компьютере.",
+      "en": "The game does not run inside a virtual machine. A regular Windows installation on a real PC is required."
+    },
+    "steps": [
+      {
+        "kind": "check",
+        "id": "C17"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van-138",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAN 140",
+    "aliases": [
+      "140",
+      "VAN-140",
+      "VAN140"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ошибка защиты Vanguard",
+      "en": "Vanguard error"
+    },
+    "explain": {
+      "ru": "Подробных шагов для этого кода в Netwick пока нет. Откройте официальную статью Riot — там описано, что делать.",
+      "en": "Netwick does not have detailed steps for this code yet. Open the official Riot article to see what to do."
+    },
+    "steps": [
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van-140",
+    "verifiedAt": "2026-05-22",
+    "ported": false
+  },
+  {
+    "code": "VAN 148",
+    "aliases": [
+      "148",
+      "VAN-148",
+      "VAN148"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ошибка защиты Vanguard",
+      "en": "Vanguard error"
+    },
+    "explain": {
+      "ru": "Подробных шагов для этого кода в Netwick пока нет. Откройте официальную статью Riot — там описано, что делать.",
+      "en": "Netwick does not have detailed steps for this code yet. Open the official Riot article to see what to do."
+    },
+    "steps": [
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van-148",
+    "verifiedAt": "2026-05-22",
+    "ported": false
+  },
+  {
+    "code": "VAN 152",
+    "aliases": [
+      "152",
+      "VAN-152",
+      "VAN152"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ограничение оборудования",
+      "en": "Hardware restriction"
+    },
+    "explain": {
+      "ru": "Это не ошибка компьютера, а ограничение со стороны Riot. Исправления не помогут.",
+      "en": "This is not a computer error but a restriction from Riot. Fixes will not help."
+    },
+    "steps": [
+      {
+        "kind": "guide",
+        "id": "G12"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van-152",
+    "verifiedAt": "2026-07-16",
+    "ported": true
+  },
+  {
+    "code": "VAN 185",
+    "aliases": [
+      "185",
+      "VAN-185",
+      "VAN185"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ошибка сессии",
+      "en": "Session error"
+    },
+    "explain": {
+      "ru": "Сессия защиты прервалась. Проверьте требования к компьютеру, отключите лишние устройства и перезапустите клиент.",
+      "en": "The protection session was interrupted. Check the PC requirements, unplug extra devices and restart the client."
+    },
+    "steps": [
+      {
+        "kind": "check",
+        "id": "C17"
+      },
+      {
+        "kind": "info",
+        "id": "usb"
+      },
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "info",
+        "id": "sign_out_other"
+      },
+      {
+        "kind": "info",
+        "id": "reboot"
+      },
+      {
+        "kind": "guide",
+        "id": "G01"
+      },
+      {
+        "kind": "guide",
+        "id": "G02"
+      },
+      {
+        "kind": "guide",
+        "id": "G10"
+      },
+      {
+        "kind": "guide",
+        "id": "G11"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van-185",
+    "verifiedAt": "2026-07-17",
+    "ported": true
+  },
+  {
+    "code": "VAN 193",
+    "aliases": [
+      "193",
+      "VAN-193",
+      "VAN193"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ошибка защиты Vanguard",
+      "en": "Vanguard error"
+    },
+    "explain": {
+      "ru": "Подробных шагов для этого кода в Netwick пока нет. Откройте официальную статью Riot — там описано, что делать.",
+      "en": "Netwick does not have detailed steps for this code yet. Open the official Riot article to see what to do."
+    },
+    "steps": [
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van-193",
+    "verifiedAt": "2026-05-22",
+    "ported": false
+  },
+  {
+    "code": "VAN 1067",
+    "aliases": [
+      "1067",
+      "VAN-1067",
+      "VAN1067"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ошибка защиты Vanguard",
+      "en": "Vanguard error"
+    },
+    "explain": {
+      "ru": "Подробных шагов для этого кода в Netwick пока нет. Откройте официальную статью Riot — там описано, что делать.",
+      "en": "Netwick does not have detailed steps for this code yet. Open the official Riot article to see what to do."
+    },
+    "steps": [
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van-1067",
+    "verifiedAt": "2026-05-22",
+    "ported": false
+  },
+  {
+    "code": "VAN 2266",
+    "aliases": [
+      "2266",
+      "VAN-2266",
+      "VAN2266"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ошибка защиты Vanguard",
+      "en": "Vanguard error"
+    },
+    "explain": {
+      "ru": "Подробных шагов для этого кода в Netwick пока нет. Откройте официальную статью Riot — там описано, что делать.",
+      "en": "Netwick does not have detailed steps for this code yet. Open the official Riot article to see what to do."
+    },
+    "steps": [
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/error-van-2266",
+    "verifiedAt": "2026-05-22",
+    "ported": false
+  },
+  {
+    "code": "VAN 9001",
+    "aliases": [
+      "9001",
+      "VAN-9001",
+      "VAN9001"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Нужен модуль безопасности TPM 2.0",
+      "en": "TPM 2.0 is required"
+    },
+    "explain": {
+      "ru": "Windows 11 не даёт защите Vanguard запуститься без включённого модуля безопасности TPM 2.0. Он включается в настройках компьютера (BIOS).",
+      "en": "On Windows 11, Vanguard cannot start without the TPM 2.0 security module. It is turned on in your computer settings (BIOS)."
+    },
+    "steps": [
+      {
+        "kind": "check",
+        "id": "C04"
+      },
+      {
+        "kind": "guide",
+        "id": "G03"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/client/error-van-9001",
+    "verifiedAt": "2026-02-04",
+    "ported": true
+  },
+  {
+    "code": "VAN 9002",
+    "aliases": [
+      "9002",
+      "VAN-9002",
+      "VAN9002"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Нужна защита Control Flow Guard",
+      "en": "Control Flow Guard is required"
+    },
+    "explain": {
+      "ru": "Одна из встроенных защит Windows (Control Flow Guard) выключена или изменена. Её нужно вернуть к стандартным настройкам.",
+      "en": "One of the built-in Windows protections (Control Flow Guard) is off or changed. It needs to be restored to default."
+    },
+    "steps": [
+      {
+        "kind": "guide",
+        "id": "G05"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/client/error-van-9002",
+    "verifiedAt": "2026-02-03",
+    "ported": true
+  },
+  {
+    "code": "VAN 9003",
+    "aliases": [
+      "9003",
+      "VAN-9003",
+      "VAN9003"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Нужна безопасная загрузка (Secure Boot)",
+      "en": "Secure Boot is required"
+    },
+    "explain": {
+      "ru": "Windows 11 требует включённой безопасной загрузки (Secure Boot), чтобы защита Vanguard работала.",
+      "en": "Windows 11 needs Secure Boot turned on for Vanguard protection to work."
+    },
+    "steps": [
+      {
+        "kind": "check",
+        "id": "C05"
+      },
+      {
+        "kind": "guide",
+        "id": "G03"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/client/error-van-9003",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAN 9004",
+    "aliases": [
+      "9004",
+      "VAN-9004",
+      "VAN9004"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ошибка защиты Vanguard",
+      "en": "Vanguard error"
+    },
+    "explain": {
+      "ru": "Подробных шагов для этого кода в Netwick пока нет. Откройте официальную статью Riot — там описано, что делать.",
+      "en": "Netwick does not have detailed steps for this code yet. Open the official Riot article to see what to do."
+    },
+    "steps": [
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/client/error-van-9004",
+    "verifiedAt": "2026-05-22",
+    "ported": false
+  },
+  {
+    "code": "VAN 9005",
+    "aliases": [
+      "9005",
+      "VAN-9005",
+      "VAN9005"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ошибка защиты Vanguard",
+      "en": "Vanguard error"
+    },
+    "explain": {
+      "ru": "Подробных шагов для этого кода в Netwick пока нет. Откройте официальную статью Riot — там описано, что делать.",
+      "en": "Netwick does not have detailed steps for this code yet. Open the official Riot article to see what to do."
+    },
+    "steps": [
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/client/error-van-9005",
+    "verifiedAt": "2026-05-22",
+    "ported": false
+  },
+  {
+    "code": "VAN 9006",
+    "aliases": [
+      "9006",
+      "VAN-9006",
+      "VAN9006"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Нужно обновить Windows",
+      "en": "Windows needs an update"
+    },
+    "explain": {
+      "ru": "Ваша версия Windows слишком старая для защиты Vanguard. Установите обновления Windows и перезагрузите компьютер.",
+      "en": "Your Windows version is too old for Vanguard protection. Install Windows updates and restart the computer."
+    },
+    "steps": [
+      {
+        "kind": "check",
+        "id": "C02"
+      },
+      {
+        "kind": "guide",
+        "id": "G06"
+      },
+      {
+        "kind": "info",
+        "id": "reboot"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/client/error-van-9006",
+    "verifiedAt": "2026-07-17",
+    "ported": true
+  },
+  {
+    "code": "VAN 9051",
+    "aliases": [
+      "9051",
+      "VAN-9051",
+      "VAN9051"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ошибка защиты Vanguard",
+      "en": "Vanguard error"
+    },
+    "explain": {
+      "ru": "Подробных шагов для этого кода в Netwick пока нет. Откройте официальную статью Riot — там описано, что делать.",
+      "en": "Netwick does not have detailed steps for this code yet. Open the official Riot article to see what to do."
+    },
+    "steps": [
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/client/error-van-9051",
+    "verifiedAt": "2026-05-22",
+    "ported": false
+  },
+  {
+    "code": "VAN 9090",
+    "aliases": [
+      "9090",
+      "VAN-9090",
+      "VAN9090"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ошибка защиты Vanguard",
+      "en": "Vanguard error"
+    },
+    "explain": {
+      "ru": "Подробных шагов для этого кода в Netwick пока нет. Откройте официальную статью Riot — там описано, что делать.",
+      "en": "Netwick does not have detailed steps for this code yet. Open the official Riot article to see what to do."
+    },
+    "steps": [
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/client/error-van-9090",
+    "verifiedAt": "2026-05-22",
+    "ported": false
+  },
+  {
+    "code": "VAN 9100",
+    "aliases": [
+      "9100",
+      "VAN-9100",
+      "VAN9100"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Ошибка защиты Vanguard",
+      "en": "Vanguard error"
+    },
+    "explain": {
+      "ru": "Подробных шагов для этого кода в Netwick пока нет. Откройте официальную статью Riot — там описано, что делать.",
+      "en": "Netwick does not have detailed steps for this code yet. Open the official Riot article to see what to do."
+    },
+    "steps": [
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/client/error-van-9100",
+    "verifiedAt": "2026-05-22",
+    "ported": false
+  },
+  {
+    "code": "VAN 9101",
+    "aliases": [
+      "9101",
+      "VAN-9101",
+      "VAN9101"
+    ],
+    "family": "VAN",
+    "title": {
+      "ru": "Не удалось подтвердить безопасность системы",
+      "en": "Attestation failure"
+    },
+    "explain": {
+      "ru": "Защита Vanguard не смогла проверить, что система в порядке. Часто помогает обновление драйверов и отключение лишних USB-устройств.",
+      "en": "Vanguard could not confirm that the system is in order. Updating drivers and unplugging extra USB devices often helps."
+    },
+    "steps": [
+      {
+        "kind": "guide",
+        "id": "G07"
+      },
+      {
+        "kind": "info",
+        "id": "usb"
+      },
+      {
+        "kind": "guide",
+        "id": "G02"
+      },
+      {
+        "kind": "check",
+        "id": "C06"
+      },
+      {
+        "kind": "guide",
+        "id": "G06"
+      },
+      {
+        "kind": "info",
+        "id": "practice_range"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/client/error-van-9101",
+    "verifiedAt": "2026-07-20",
+    "ported": true
+  },
+  {
+    "code": "VAL 0",
+    "aliases": [
+      "0",
+      "VAL-0",
+      "VAL0"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Ошибка соединения",
+      "en": "Connection error"
+    },
+    "explain": {
+      "ru": "Перезапустите игру и Riot Client.",
+      "en": "Restart the game and the Riot Client."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 1",
+    "aliases": [
+      "1",
+      "VAL-1",
+      "VAL1"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Ошибка соединения",
+      "en": "Connection error"
+    },
+    "explain": {
+      "ru": "Перезапустите игру и Riot Client.",
+      "en": "Restart the game and the Riot Client."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 4",
+    "aliases": [
+      "4",
+      "VAL-4",
+      "VAL4"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Недопустимое имя (Riot ID)",
+      "en": "Invalid name (Riot ID)"
+    },
+    "explain": {
+      "ru": "Нужно сменить Riot ID на сайте Riot.",
+      "en": "You need to change your Riot ID on the Riot website."
+    },
+    "steps": [
+      {
+        "kind": "info",
+        "id": "riot_id"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 5",
+    "aliases": [
+      "5",
+      "VAL-5",
+      "VAL5"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Вход с другого устройства",
+      "en": "Signed in on another device"
+    },
+    "explain": {
+      "ru": "Выйдите из аккаунта на всех других устройствах.",
+      "en": "Sign out of the account on all other devices."
+    },
+    "steps": [
+      {
+        "kind": "info",
+        "id": "sign_out_other"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 7",
+    "aliases": [
+      "7",
+      "VAL-7",
+      "VAL7"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Нет связи с сервисом сессий",
+      "en": "Cannot connect to the session service"
+    },
+    "explain": {
+      "ru": "Возможна блокировка аккаунта (проверьте почту) или сбой платформы.",
+      "en": "The account may be suspended (check your e-mail) or the platform has an issue."
+    },
+    "steps": [
+      {
+        "kind": "info",
+        "id": "check_email"
+      },
+      {
+        "kind": "info",
+        "id": "server_status"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 8",
+    "aliases": [
+      "8",
+      "VAL-8",
+      "VAL8"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Ошибка Riot Client",
+      "en": "Riot Client issue"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client.",
+      "en": "Restart the Riot Client."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 9",
+    "aliases": [
+      "9",
+      "VAL-9",
+      "VAL9"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Ошибка Riot Client",
+      "en": "Riot Client issue"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client.",
+      "en": "Restart the Riot Client."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 10",
+    "aliases": [
+      "10",
+      "VAL-10",
+      "VAL10"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Ошибка Riot Client",
+      "en": "Riot Client issue"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client.",
+      "en": "Restart the Riot Client."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 11",
+    "aliases": [
+      "11",
+      "VAL-11",
+      "VAL11"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Ошибка Riot Client",
+      "en": "Riot Client issue"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client.",
+      "en": "Restart the Riot Client."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 12",
+    "aliases": [
+      "12",
+      "VAL-12",
+      "VAL12"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Ошибка Riot Client",
+      "en": "Riot Client issue"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client.",
+      "en": "Restart the Riot Client."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 13",
+    "aliases": [
+      "13",
+      "VAL-13",
+      "VAL13"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Ошибка Riot Client",
+      "en": "Riot Client issue"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client.",
+      "en": "Restart the Riot Client."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 14",
+    "aliases": [
+      "14",
+      "VAL-14",
+      "VAL14"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Ошибка Riot Client",
+      "en": "Riot Client issue"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client.",
+      "en": "Restart the Riot Client."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 15",
+    "aliases": [
+      "15",
+      "VAL-15",
+      "VAL15"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Ошибка Riot Client",
+      "en": "Riot Client issue"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client.",
+      "en": "Restart the Riot Client."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 16",
+    "aliases": [
+      "16",
+      "VAL-16",
+      "VAL16"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Ошибка Riot Client",
+      "en": "Riot Client issue"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client.",
+      "en": "Restart the Riot Client."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 17",
+    "aliases": [
+      "17",
+      "VAL-17",
+      "VAL17"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Ошибка Riot Client",
+      "en": "Riot Client issue"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client.",
+      "en": "Restart the Riot Client."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 18",
+    "aliases": [
+      "18",
+      "VAL-18",
+      "VAL18"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Ошибка Riot Client",
+      "en": "Riot Client issue"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client.",
+      "en": "Restart the Riot Client."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 19",
+    "aliases": [
+      "19",
+      "VAL-19",
+      "VAL19"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Ошибка Riot Client",
+      "en": "Riot Client issue"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client.",
+      "en": "Restart the Riot Client."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 20",
+    "aliases": [
+      "20",
+      "VAL-20",
+      "VAL20"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Ошибка Riot Client",
+      "en": "Riot Client issue"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client.",
+      "en": "Restart the Riot Client."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 21",
+    "aliases": [
+      "21",
+      "VAL-21",
+      "VAL21"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Ошибка Riot Client",
+      "en": "Riot Client issue"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client.",
+      "en": "Restart the Riot Client."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 29",
+    "aliases": [
+      "29",
+      "VAL-29",
+      "VAL29"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Брандмауэр блокирует игру",
+      "en": "Firewall is blocking the game"
+    },
+    "explain": {
+      "ru": "Брандмауэр Windows должен разрешать игре выходить в сеть.",
+      "en": "Windows Firewall must allow the game to connect."
+    },
+    "steps": [
+      {
+        "kind": "check",
+        "id": "C12"
+      },
+      {
+        "kind": "fix",
+        "id": "F06"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 31",
+    "aliases": [
+      "31",
+      "VAL-31",
+      "VAL31"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Не удалось получить имя игрока",
+      "en": "Failed to fetch player name"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client.",
+      "en": "Restart the Riot Client."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 33",
+    "aliases": [
+      "33",
+      "VAL-33",
+      "VAL33"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Процесс Riot Client закрыт",
+      "en": "Riot Client process closed"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client.",
+      "en": "Restart the Riot Client."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 38",
+    "aliases": [
+      "38",
+      "VAL-38",
+      "VAL38"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Ошибка соединения",
+      "en": "Connection error"
+    },
+    "explain": {
+      "ru": "Перезапустите игру и Riot Client.",
+      "en": "Restart the game and the Riot Client."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 39",
+    "aliases": [
+      "39",
+      "VAL-39",
+      "VAL39"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Сервер недоступен",
+      "en": "Server unreachable"
+    },
+    "explain": {
+      "ru": "Скорее всего, идут технические работы. Попробуйте позже.",
+      "en": "Most likely there is maintenance. Try again later."
+    },
+    "steps": [
+      {
+        "kind": "info",
+        "id": "server_status"
+      },
+      {
+        "kind": "info",
+        "id": "wait"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 43",
+    "aliases": [
+      "43",
+      "VAL-43",
+      "VAL43"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Система не ответила вовремя",
+      "en": "A system has timed out"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client.",
+      "en": "Restart the Riot Client."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 44",
+    "aliases": [
+      "44",
+      "VAL-44",
+      "VAL44"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Vanguard не инициализирован",
+      "en": "Vanguard not initialized"
+    },
+    "explain": {
+      "ru": "Перезапустите клиент. Если не помогло — переустановите Vanguard.",
+      "en": "Restart the client. If that does not help, reinstall Vanguard."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "guide",
+        "id": "G01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 45",
+    "aliases": [
+      "45",
+      "VAL-45",
+      "VAL45"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Vanguard требует перезапуска",
+      "en": "Vanguard requires a restart"
+    },
+    "explain": {
+      "ru": "Перезапустите клиент. Если не помогло — переустановите Vanguard.",
+      "en": "Restart the client. If that does not help, reinstall Vanguard."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "guide",
+        "id": "G01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 46",
+    "aliases": [
+      "46",
+      "VAL-46",
+      "VAL46"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Плановые технические работы",
+      "en": "Scheduled downtime"
+    },
+    "explain": {
+      "ru": "Идут плановые работы. Попробуйте позже.",
+      "en": "Scheduled maintenance is in progress. Try again later."
+    },
+    "steps": [
+      {
+        "kind": "info",
+        "id": "server_status"
+      },
+      {
+        "kind": "info",
+        "id": "wait"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 49",
+    "aliases": [
+      "49",
+      "VAL-49",
+      "VAL49"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Чат или голос не запустились",
+      "en": "Chat or voice not initialized"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client.",
+      "en": "Restart the Riot Client."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 50",
+    "aliases": [
+      "50",
+      "VAL-50",
+      "VAL50"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Чат или голос не запустились",
+      "en": "Chat or voice not initialized"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client.",
+      "en": "Restart the Riot Client."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 51",
+    "aliases": [
+      "51",
+      "VAL-51",
+      "VAL51"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Не удалось создать группу",
+      "en": "Failed to create party"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client.",
+      "en": "Restart the Riot Client."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 52",
+    "aliases": [
+      "52",
+      "VAL-52",
+      "VAL52"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Сбой службы клиента",
+      "en": "Client service failure"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client и проверьте объявления поддержки.",
+      "en": "Restart the Riot Client and check support announcements."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "info",
+        "id": "server_status"
+      },
+      {
+        "kind": "guide",
+        "id": "G13"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 53",
+    "aliases": [
+      "53",
+      "VAL-53",
+      "VAL53"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Сбой службы клиента",
+      "en": "Client service failure"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client и проверьте объявления поддержки.",
+      "en": "Restart the Riot Client and check support announcements."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "info",
+        "id": "server_status"
+      },
+      {
+        "kind": "guide",
+        "id": "G13"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 54",
+    "aliases": [
+      "54",
+      "VAL-54",
+      "VAL54"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Сбой службы клиента",
+      "en": "Client service failure"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client и проверьте объявления поддержки.",
+      "en": "Restart the Riot Client and check support announcements."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "info",
+        "id": "server_status"
+      },
+      {
+        "kind": "guide",
+        "id": "G13"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 55",
+    "aliases": [
+      "55",
+      "VAL-55",
+      "VAL55"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Сбой службы клиента",
+      "en": "Client service failure"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client и проверьте объявления поддержки.",
+      "en": "Restart the Riot Client and check support announcements."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "info",
+        "id": "server_status"
+      },
+      {
+        "kind": "guide",
+        "id": "G13"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 56",
+    "aliases": [
+      "56",
+      "VAL-56",
+      "VAL56"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Сбой службы клиента",
+      "en": "Client service failure"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client и проверьте объявления поддержки.",
+      "en": "Restart the Riot Client and check support announcements."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "info",
+        "id": "server_status"
+      },
+      {
+        "kind": "guide",
+        "id": "G13"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 57",
+    "aliases": [
+      "57",
+      "VAL-57",
+      "VAL57"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Сбой службы клиента",
+      "en": "Client service failure"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client и проверьте объявления поддержки.",
+      "en": "Restart the Riot Client and check support announcements."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "info",
+        "id": "server_status"
+      },
+      {
+        "kind": "guide",
+        "id": "G13"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 58",
+    "aliases": [
+      "58",
+      "VAL-58",
+      "VAL58"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Сбой службы клиента",
+      "en": "Client service failure"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client и проверьте объявления поддержки.",
+      "en": "Restart the Riot Client and check support announcements."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "info",
+        "id": "server_status"
+      },
+      {
+        "kind": "guide",
+        "id": "G13"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 59",
+    "aliases": [
+      "59",
+      "VAL-59",
+      "VAL59"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Очередь входа",
+      "en": "Login queue"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client и проверьте объявления поддержки.",
+      "en": "Restart the Riot Client and check support announcements."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "info",
+        "id": "server_status"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 60",
+    "aliases": [
+      "60",
+      "VAL-60",
+      "VAL60"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Ошибка запуска",
+      "en": "Launch failure"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client.",
+      "en": "Restart the Riot Client."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 63",
+    "aliases": [
+      "63",
+      "VAL-63",
+      "VAL63"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Ошибка запуска",
+      "en": "Launch failure"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client.",
+      "en": "Restart the Riot Client."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 64",
+    "aliases": [
+      "64",
+      "VAL-64",
+      "VAL64"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Ошибка запуска",
+      "en": "Launch failure"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client.",
+      "en": "Restart the Riot Client."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 65",
+    "aliases": [
+      "65",
+      "VAL-65",
+      "VAL65"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Ошибка запуска",
+      "en": "Launch failure"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client.",
+      "en": "Restart the Riot Client."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 66",
+    "aliases": [
+      "66",
+      "VAL-66",
+      "VAL66"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Ошибка запуска",
+      "en": "Launch failure"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client.",
+      "en": "Restart the Riot Client."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 61",
+    "aliases": [
+      "61",
+      "VAL-61",
+      "VAL61"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Аккаунт заблокирован",
+      "en": "Account banned"
+    },
+    "explain": {
+      "ru": "Это ограничение аккаунта. Обратитесь в поддержку Riot.",
+      "en": "This is an account restriction. Contact Riot Support."
+    },
+    "steps": [
+      {
+        "kind": "guide",
+        "id": "G13"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 62",
+    "aliases": [
+      "62",
+      "VAL-62",
+      "VAL62"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Нет связи с игровыми серверами",
+      "en": "NoGamepodsToPingFailure"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client. Если не помогло — обратитесь в поддержку.",
+      "en": "Restart the Riot Client. If that does not help, contact support."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "guide",
+        "id": "G10"
+      },
+      {
+        "kind": "guide",
+        "id": "G13"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 67",
+    "aliases": [
+      "67",
+      "VAL-67",
+      "VAL67"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Сбой чата или друзей",
+      "en": "Chat or friends failure"
+    },
+    "explain": {
+      "ru": "Перезапустите игру и Riot Client.",
+      "en": "Restart the game and the Riot Client."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "guide",
+        "id": "G13"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 68",
+    "aliases": [
+      "68",
+      "VAL-68",
+      "VAL68"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Не загрузился контент или магазин",
+      "en": "Failed to load content or store"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client и проверьте объявления поддержки.",
+      "en": "Restart the Riot Client and check support announcements."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "info",
+        "id": "server_status"
+      },
+      {
+        "kind": "guide",
+        "id": "G13"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 69",
+    "aliases": [
+      "69",
+      "VAL-69",
+      "VAL69"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Не загрузился контент или магазин",
+      "en": "Failed to load content or store"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client и проверьте объявления поддержки.",
+      "en": "Restart the Riot Client and check support announcements."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "info",
+        "id": "server_status"
+      },
+      {
+        "kind": "guide",
+        "id": "G13"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 70",
+    "aliases": [
+      "70",
+      "VAL-70",
+      "VAL70"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Не загрузился контент или магазин",
+      "en": "Failed to load content or store"
+    },
+    "explain": {
+      "ru": "Перезапустите Riot Client и проверьте объявления поддержки.",
+      "en": "Restart the Riot Client and check support announcements."
+    },
+    "steps": [
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "info",
+        "id": "server_status"
+      },
+      {
+        "kind": "guide",
+        "id": "G13"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL -81",
+    "aliases": [
+      "-81",
+      "81",
+      "VAL-81"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Служба не запустилась",
+      "en": "Service failed to start"
+    },
+    "explain": {
+      "ru": "Перезагрузите компьютер и клиент. Если не помогло — переустановите Vanguard и игру.",
+      "en": "Restart the PC and the client. If that does not help, reinstall Vanguard and the game."
+    },
+    "steps": [
+      {
+        "kind": "info",
+        "id": "reboot"
+      },
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "guide",
+        "id": "G01"
+      },
+      {
+        "kind": "guide",
+        "id": "G11"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 128",
+    "aliases": [
+      "128",
+      "VAL-128",
+      "VAL128"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Ошибка соединения",
+      "en": "Connection error"
+    },
+    "explain": {
+      "ru": "Перезагрузите компьютер и клиент. Если не помогло — переустановите Vanguard и игру.",
+      "en": "Restart the PC and the client. If that does not help, reinstall Vanguard and the game."
+    },
+    "steps": [
+      {
+        "kind": "info",
+        "id": "reboot"
+      },
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "guide",
+        "id": "G01"
+      },
+      {
+        "kind": "guide",
+        "id": "G11"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 138",
+    "aliases": [
+      "138",
+      "VAL-138",
+      "VAL138"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Запуск в виртуальной машине",
+      "en": "Running in a virtual machine"
+    },
+    "explain": {
+      "ru": "Игра не работает в виртуальной машине. Нужна обычная Windows.",
+      "en": "The game does not run in a virtual machine. Regular Windows is required."
+    },
+    "steps": [
+      {
+        "kind": "check",
+        "id": "C17"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "VAL 152",
+    "aliases": [
+      "152",
+      "VAL-152",
+      "VAL152"
+    ],
+    "family": "VAL",
+    "title": {
+      "ru": "Блокировка оборудования",
+      "en": "Hardware ban"
+    },
+    "explain": {
+      "ru": "Это ограничение, обычно на 4 месяца. Исправления не помогут.",
+      "en": "This is a restriction, usually for 4 months. Fixes will not help."
+    },
+    "steps": [
+      {
+        "kind": "guide",
+        "id": "G12"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/error-codes-and-solutions-in-valorant",
+    "verifiedAt": "2026-10-26",
+    "ported": true
+  },
+  {
+    "code": "UPDATE 0%",
+    "aliases": [
+      "0%",
+      "UPDATE",
+      "STUCK",
+      "ОБНОВЛЕНИЕ",
+      "НЕ ОБНОВЛЯЕТСЯ"
+    ],
+    "family": "SYMPTOM",
+    "title": {
+      "ru": "Обновление зависло на 0%",
+      "en": "Update stuck at 0%"
+    },
+    "explain": {
+      "ru": "Обновление может не начинаться из-за антивируса. Riot советует временно включить пассивный режим антивируса на время обновления.",
+      "en": "The update may not start because of antivirus software. Riot suggests temporarily enabling the antivirus passive mode while updating."
+    },
+    "steps": [
+      {
+        "kind": "check",
+        "id": "C21"
+      },
+      {
+        "kind": "guide",
+        "id": "G09"
+      },
+      {
+        "kind": "fix",
+        "id": "F01"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/valorant/performance/cannot-update-and-launch-valorant",
+    "verifiedAt": "2026-05-29",
+    "ported": true
+  },
+  {
+    "code": "CONNECTION",
+    "aliases": [
+      "NETWORK",
+      "PING",
+      "LAG",
+      "DISCONNECT",
+      "СЕТЬ",
+      "ПИНГ",
+      "ЛАГИ",
+      "ВЫЛЕТАЕТ ИЗ МАТЧА",
+      "ПОДКЛЮЧЕНИЕ"
+    ],
+    "family": "SYMPTOM",
+    "title": {
+      "ru": "Проблемы с подключением или высокий пинг",
+      "en": "Connection problems or high ping"
+    },
+    "explain": {
+      "ru": "Шаги из официальной инструкции Riot по подключению, в её порядке: от самых простых к более серьёзным.",
+      "en": "Steps from Riot's official connection guide, in its order: from the simplest to the more involved."
+    },
+    "steps": [
+      {
+        "kind": "guide",
+        "id": "G10"
+      },
+      {
+        "kind": "fix",
+        "id": "F05"
+      },
+      {
+        "kind": "fix",
+        "id": "F02"
+      },
+      {
+        "kind": "fix",
+        "id": "F03"
+      },
+      {
+        "kind": "fix",
+        "id": "F04"
+      },
+      {
+        "kind": "guide",
+        "id": "G08"
+      },
+      {
+        "kind": "guide",
+        "id": "G02"
+      },
+      {
+        "kind": "fix",
+        "id": "F06"
+      },
+      {
+        "kind": "guide",
+        "id": "G13"
+      },
+      {
+        "kind": "article",
+        "id": "official"
+      }
+    ],
+    "sourceUrl": "https://support.riotgames.com/en-us/riot/performance/troubleshoot-pc-connection",
+    "verifiedAt": "2026-05-16",
+    "ported": true
+  }
+]

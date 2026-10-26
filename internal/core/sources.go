@@ -1,0 +1,48 @@
+package core
+
+const (
+	RiotBase = "https://support.riotgames.com/en-us"
+
+	SrcMinSpecs          = RiotBase + "/valorant/support-tools/minimum-recommended-pc-specs"
+	SrcVALErrorCodes     = RiotBase + "/valorant/performance/error-codes-and-solutions-in-valorant"
+	SrcVANErrorCodes     = RiotBase + "/riot/performance/vanguard-error-codes"
+	SrcThirdParty        = RiotBase + "/valorant/account/third-party-applications"
+	SrcRepairTool        = RiotBase + "/riot/performance/gathering-logs-riot-repair-tool-rrt"
+	SrcPreCheck          = RiotBase + "/riot/performance/vanguard-pre-check"
+	SrcSecurityReqs      = RiotBase + "/riot/performance/vanguard-security-requirements"
+	SrcTPM               = RiotBase + "/riot/client/enable-tpm-20"
+	SrcSecureBoot        = RiotBase + "/riot/client/secure-boot-guide"
+	SrcConnection        = RiotBase + "/riot/performance/troubleshoot-pc-connection"
+	SrcDNS               = RiotBase + "/riot/connectivity/configure-your-dns"
+	SrcFirewall          = RiotBase + "/valorant/performance/your-firewall-vs-valorant"
+	SrcCleanBoot         = RiotBase + "/riot/performance/perform-clean-boot"
+	SrcUninstallVanguard = RiotBase + "/riot/performance/uninstall-and-disable-vanguard"
+	SrcKiller            = RiotBase + "/riot/connectivity/disable-killer-network-service"
+	SrcCannotUpdate      = RiotBase + "/valorant/performance/cannot-update-and-launch-valorant"
+	SrcIncompatibleSW    = RiotBase + "/valorant/performance/van-incompatible-software"
+	SrcVanguardConn      = RiotBase + "/riot/performance/troubleshoot-vanguard-connection-issues"
+	SrcVAN57             = RiotBase + "/riot/performance/error-van-57"
+	SrcVAN68             = RiotBase + "/riot/performance/error-van-68"
+	SrcVAN81             = RiotBase + "/riot/performance/error-van--81"
+	SrcVAN128            = RiotBase + "/riot/performance/error-van-128"
+	SrcVAN138            = RiotBase + "/riot/performance/error-van-138"
+	SrcVAN152            = RiotBase + "/riot/performance/error-van-152"
+	SrcVAN9001           = RiotBase + "/riot/client/error-van-9001"
+	SrcVAN9002           = RiotBase + "/riot/client/error-van-9002"
+	SrcVAN9003           = RiotBase + "/riot/client/error-van-9003"
+	SrcVAN9006           = RiotBase + "/riot/client/error-van-9006"
+	SrcVAN9101           = RiotBase + "/riot/client/error-van-9101"
+	SrcRestriction       = RiotBase + "/riot/penalties/error-van-restriction"
+	SrcRestriction1      = RiotBase + "/riot/penalties/error-van-restriction-1"
+	SrcOEMDriver         = RiotBase + "/riot/performance/van-incompatible-oem-driver"
+	SrcVMD9001           = RiotBase + "/riot/performance/error-van-status-vmd-9001"
+	SrcSBPolicy          = RiotBase + "/riot/performance/error-van-status-sb-policy"
+	SrcSubmitTicket      = "https://support.riotgames.com/en-us/valorant/submit-a-ticket"
+	SrcServerStatus      = "https://status.riotgames.com/"
+	SrcRiotSupport       = "https://support.riotgames.com/en-us/valorant"
+
+	SrcMSRestorePoint = "https://support.microsoft.com/en-us/windows/system-restore-a5ae3ed9-07c4-fd56-45ee-096777ecd14e"
+	SrcMSWebView2     = "https://developer.microsoft.com/en-us/microsoft-edge/webview2/"
+)
+
+var RiotDomains = []string{"support.riotgames.com", "www.riotgames.com", "status.riotgames.com"}
