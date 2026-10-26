@@ -86,7 +86,55 @@ const paths: Record<string, string[]> = {
   search: ["M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z", "M21 21l-4.3-4.3"],
   chevron: ["M9 18l6-6-6-6"],
   shield: ["M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"],
+  home: ["M3 11l9-7 9 7", "M5 10v10h14V10", "M10 20v-6h4v6"],
+  wrench: ["M14.7 6.3a4 4 0 0 0 5 5L22 14l-8 8-2.3-2.3a4 4 0 0 0-5-5L4 12l8-8z", "M2 22l6-6"],
+  power: ["M12 2v9", "M5.6 6.6a8 8 0 1 0 12.8 0"],
+  bolt: ["M13 2L4 14h7l-1 8 9-12h-7z"],
+  nodes: ["M5 12h14", "M12 5v14", "M5 5h3v3H5z", "M16 5h3v3h-3z", "M5 16h3v3H5z", "M16 16h3v3h-3z"],
+  pin: ["M12 22v-7", "M7 15h10l-2-4V5h1V3H8v2h1v6z"],
+  trash: ["M4 7h16", "M10 11v6", "M14 11v6", "M6 7l1 13h10l1-13", "M9 7V4h6v3"],
+  broom: ["M14 3l-4 9", "M6 12h10l2 9H4z", "M9 16v5", "M13 16v5"],
+  session: ["M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z", "M4 21c0-4 4-6 8-6", "M16 17l4 4", "M20 17l-4 4"],
+  radar: ["M12 21a9 9 0 1 1 9-9", "M12 16a4 4 0 1 1 4-4", "M12 12l7-7"],
+  reset: ["M3 12a9 9 0 1 0 3-6.7L3 8", "M3 3v5h5"],
+  support: ["M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z", "M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z", "M5 5l4 4", "M15 15l4 4", "M19 5l-4 4", "M9 15l-4 4"],
+  globe: ["M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z", "M2 12h20", "M12 2c3 3 4 6.5 4 10s-1 7-4 10c-3-3-4-6.5-4-10s1-7 4-10z"],
+  list: ["M9 6h12", "M9 12h12", "M9 18h12", "M4 6h.01", "M4 12h.01", "M4 18h.01"],
+  star: ["M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"],
+  medal: ["M12 15a6 6 0 1 0 0-12 6 6 0 0 0 0 12z", "M8.5 14L7 21l5-3 5 3-1.5-7"],
+  flame: ["M12 22c4 0 7-2.8 7-7 0-3-2-5-3.5-7-.4 1.6-1.4 2.6-2.5 3 .5-3-1-6-4-8 .3 3-1.5 4.6-2.6 6.2C5.3 10.7 5 12.8 5 15c0 4.2 3 7 7 7z"],
+  trophy: ["M8 4h8v6a4 4 0 0 1-8 0z", "M8 6H4v1a4 4 0 0 0 4 4", "M16 6h4v1a4 4 0 0 1-4 4", "M12 14v4", "M8 21h8", "M10 18h4"],
+  signal: ["M4 20v-4", "M9 20v-8", "M14 20V8", "M19 20V4"],
+  calendar: ["M4 6h16v14H4z", "M4 10h16", "M8 3v4", "M16 3v4"],
+  bulb: ["M9 18h6", "M10 21h4", "M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"],
+  checkshield: ["M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z", "M8.5 12l2.5 2.5L16 9.5"],
+  eye: ["M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z", "M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"],
+  heart: ["M12 21s-8-5.2-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.8-8 11-8 11z"],
 };
+
+const SVG_NS = "http://www.w3.org/2000/svg";
+
+export function svgEl<K extends keyof SVGElementTagNameMap>(tag: K, attrs: Record<string, string> = {}, ...children: SVGElement[]): SVGElementTagNameMap[K] {
+  const el = document.createElementNS(SVG_NS, tag);
+  for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+  for (const c of children) el.appendChild(c);
+  return el;
+}
+
+export function countUp(el: HTMLElement, to: number, ms = 900): void {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches || to <= 0) {
+    el.textContent = String(to);
+    return;
+  }
+  const start = performance.now();
+  const tick = (now: number) => {
+    const p = Math.min(1, (now - start) / ms);
+    const eased = 1 - Math.pow(1 - p, 3);
+    el.textContent = String(Math.round(to * eased));
+    if (p < 1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
 
 export function icon(name: string, cls = "icon"): SVGSVGElement {
   const svg = document.createElementNS(SVG, "svg");

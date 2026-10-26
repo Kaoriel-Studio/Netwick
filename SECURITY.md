@@ -11,5 +11,5 @@ Only the latest release is supported with security fixes.
 
 ## How Netwick is built to be safe
 
-See [docs/SECURITY.md](docs/SECURITY.md) for the threat model and the full checklist, and
+See [dev/SECURITY.md](dev/SECURITY.md) for the threat model and the full checklist, and
 [docs/PRIVACY.md](docs/PRIVACY.md) for what data Netwick touches.

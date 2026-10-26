@@ -146,6 +146,22 @@ type PendingReboot struct {
 	FileRename    bool
 }
 
+type PowerPlan string
+
+const (
+	PlanBalanced    PowerPlan = "balanced"
+	PlanHigh        PowerPlan = "high"
+	PlanUltimate    PowerPlan = "ultimate"
+	PlanPowerSaver  PowerPlan = "saver"
+	PlanUnknownPlan PowerPlan = "unknown"
+)
+
+type PowerInfo struct {
+	Plan      PowerPlan
+	OnBattery TriState
+	GameMode  TriState
+}
+
 type System interface {
 	Name() string
 	Env(name string) string
@@ -168,6 +184,7 @@ type System interface {
 	DriverFile(name string) (DriverFile, error)
 	Hardware() (Hardware, error)
 	PendingReboot() (PendingReboot, error)
+	Power() (PowerInfo, error)
 	DiskFree(path string) (uint64, error)
 	HostsPath() string
 	Now() time.Time
@@ -213,6 +230,9 @@ type Actions interface {
 	GetCrashDumpEnabled() (RegDWORD, error)
 	SetCrashDumpEnabled(v RegDWORD) error
 	WriteHosts(content []byte) error
-	CreateRestorePoint(description string) error
 	BackupDir() string
+	RemoveTree(path string) error
+	RemoveFile(path string) error
+	ScheduleReboot(ctx context.Context) error
+	CancelReboot(ctx context.Context) error
 }

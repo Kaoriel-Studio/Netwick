@@ -7,16 +7,18 @@ import (
 	"strings"
 
 	"github.com/kaoriel-studio/netwick/internal/fixes"
+	"github.com/kaoriel-studio/netwick/internal/probe"
 )
 
 const ActionUndo = "UNDO"
 const MaxActions = 10
+const MaxRouteHosts = 12
 
 type Args struct {
-	Pipe             string
-	Actions          []string
-	DNSAdapterLUID   uint64
-	SkipRestorePoint bool
+	Pipe           string
+	Actions        []string
+	DNSAdapterLUID uint64
+	RouteHosts     []string
 }
 
 var pipeRe = regexp.MustCompile(`^[0-9a-f]{32}$`)
@@ -89,11 +91,22 @@ func ParseArgs(argv []string) (Args, error) {
 				return a, ErrUsage
 			}
 			a.DNSAdapterLUID = n
-		case "--skip-restore-point":
-			if hasVal {
+		case "--route-hosts":
+			if !hasVal || val == "" {
 				return a, ErrUsage
 			}
-			a.SkipRestorePoint = true
+			hosts := strings.Split(val, ",")
+			if len(hosts) > MaxRouteHosts {
+				return a, ErrUsage
+			}
+			dup := map[string]bool{}
+			for _, h := range hosts {
+				if dup[h] || h != strings.ToLower(h) || !probe.IsRiotHost(h) {
+					return a, ErrUsage
+				}
+				dup[h] = true
+			}
+			a.RouteHosts = hosts
 		default:
 			return a, ErrUsage
 		}
@@ -101,13 +114,16 @@ func ParseArgs(argv []string) (Args, error) {
 	if a.Pipe == "" || len(a.Actions) == 0 {
 		return a, ErrUsage
 	}
-	needLUID := false
+	needLUID, needHosts := false, false
 	for _, x := range a.Actions {
-		if x == "F04" {
+		switch x {
+		case "F04":
 			needLUID = true
+		case "F14":
+			needHosts = true
 		}
 	}
-	if needLUID != (a.DNSAdapterLUID != 0) {
+	if needLUID != (a.DNSAdapterLUID != 0) || needHosts != (len(a.RouteHosts) > 0) {
 		return a, ErrUsage
 	}
 	return a, nil
@@ -118,8 +134,8 @@ func (a Args) Build() []string {
 	if a.DNSAdapterLUID != 0 {
 		out = append(out, "--dns-adapter-luid="+strconv.FormatUint(a.DNSAdapterLUID, 10))
 	}
-	if a.SkipRestorePoint {
-		out = append(out, "--skip-restore-point")
+	if len(a.RouteHosts) > 0 {
+		out = append(out, "--route-hosts="+strings.Join(a.RouteHosts, ","))
 	}
 	return out
 }

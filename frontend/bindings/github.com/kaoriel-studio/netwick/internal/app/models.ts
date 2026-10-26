@@ -4,8 +4,8 @@
 export interface Settings {
     "language": string;
     "theme": string;
-    "restorePoint": boolean;
     "updateCheck": boolean;
     "tray": boolean;
     "watchClient": boolean;
+    "region": string;
 }

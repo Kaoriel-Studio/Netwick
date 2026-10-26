@@ -46,12 +46,15 @@ type AppService struct {
 func NewAppService(st *State) *AppService { return &AppService{st: st} }
 
 func (a *AppService) Info() AppInfo {
+	a.st.mu.Lock()
+	scenario := a.st.Env.Scenario
+	a.st.mu.Unlock()
 	return AppInfo{
 		Name:       app.Name,
 		Version:    app.Version,
 		Repository: app.Repository,
 		Demo:       a.st.Env.Demo,
-		Scenario:   a.st.Env.Scenario,
+		Scenario:   scenario,
 		Scenarios:  append([]string{}, a.Scenarios...),
 		Platform:   runtime.GOOS,
 		License:    "MIT",
@@ -211,7 +214,9 @@ func (r *ReportService) Build() report.Report {
 	}
 	mode := "windows"
 	if r.st.Env.Demo {
+		r.st.mu.Lock()
 		mode = "demo:" + r.st.Env.Scenario
+		r.st.mu.Unlock()
 	}
 	return report.Build(app.Name, app.Version, mode, time.Now(), res, v, recs, r.sanitizer())
 }

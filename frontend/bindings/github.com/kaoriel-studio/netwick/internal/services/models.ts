@@ -10,6 +10,9 @@ import * as fixes$0 from "../fixes/models.js";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: Unused imports
 import * as verdict$0 from "../verdict/models.js";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore: Unused imports
+import * as worker$0 from "../worker/models.js";
 
 export interface AppInfo {
     "name": string;
@@ -25,7 +28,7 @@ export interface AppInfo {
 export interface ApplyOptions {
     "onDemand": string;
     "context": string;
-    "skipRestorePoint": boolean;
+    "hosts": string[] | null;
 }
 
 export interface Crosshair {
@@ -35,19 +38,25 @@ export interface Crosshair {
     "createdAt": string;
 }
 
+export interface DemoInfo {
+    "active": boolean;
+    "scenario": string;
+    "scenarios": string[] | null;
+}
+
 export interface FixView {
     "id": string;
     "sourceUrl": string;
     "requiresAdmin": boolean;
     "requiresReboot": boolean;
     "reversible": boolean;
+    "noUndoNeeded": boolean;
+    "local": boolean;
     "risk": fixes$0.Risk;
-    "restorePoint": boolean;
     "scenario": string;
     "askOnDemand": boolean;
     "adapter": string;
     "adapterMissing": boolean;
-    "willRestorePoint": boolean;
     "allowed": boolean;
     "blockReason": string;
 }
@@ -71,17 +80,39 @@ export interface Link {
     "url": string;
 }
 
+export interface NodesView {
+    "plans": worker$0.RoutePlan[] | null;
+    "needed": number;
+    "pinned": number;
+    "allDown": number;
+    "cancelled": boolean;
+}
+
 export interface Outcome {
     "fixId": string;
     "ok": boolean;
     "changed": boolean;
     "errorKey": string;
     "rebootRequired": boolean;
-    "restorePoint": string;
-    "needConfirmNoRestorePoint": boolean;
     "blockedOnDemand": boolean;
     "declined": boolean;
     "undoAvailable": boolean;
+}
+
+export interface QualityView {
+    "host": string;
+    "ip": string;
+    "samples": number[] | null;
+    "min": number;
+    "avg": number;
+    "max": number;
+    "jitter": number;
+    "loss": number;
+}
+
+export interface RebootOutcome {
+    "ok": boolean;
+    "simulated": boolean;
 }
 
 export interface RunSummary {

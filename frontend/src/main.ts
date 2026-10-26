@@ -1,19 +1,23 @@
 import { h } from "./dom";
 import { t, setLang } from "./i18n";
-import { state, buildShell, resetTo, go, applyTheme, setUndoHandler, modal, refreshUndo, toast, backButton, link } from "./app";
+import { state, buildShell, resetTo, go, applyTheme, setUndoHandler, modal, refreshUndo, toast, backButton, link, screenHead, markNav } from "./app";
 import { AppService, FixService, Events, AppNavigate } from "./api";
 import { homeScreen, startCheck } from "./screens/check";
 import { toolsScreen } from "./screens/tools";
 import { settingsScreen, aboutBlock } from "./screens/settings";
+import { repairScreen } from "./screens/repair";
+import { supportScreen } from "./screens/support";
 
 function helpScreen(): HTMLElement {
   return h("section", { class: "screen help" },
     backButton(),
-    h("h1", { class: "screen-title", text: t("help.title") }),
+    ...screenHead(t("help.kicker"), t("help.title")),
     h("div", { class: "card" },
-      h("ol", { class: "steps-list" }, [1, 2, 3, 4].map((i) => h("li", { text: t("help.step." + i) }))),
+      h("ol", { class: "steps-list" }, [1, 2, 3, 4, 5].map((i) => h("li", { text: t("help.step." + i) }))),
       h("p", { class: "muted", text: t("help.safe") }),
-      link(t("links.support"), "https://support.riotgames.com/en-us/valorant")),
+      h("div", { class: "actions" },
+        h("button", { class: "btn btn-secondary btn-small", type: "button", on: { click: () => void go(supportScreen) } }, t("result.contact")),
+        link(t("links.support"), "https://support.riotgames.com/en-us/valorant"))),
     aboutBlock(state.info?.version ?? "", state.info?.repository ?? ""));
 }
 
@@ -49,9 +53,14 @@ async function boot(): Promise<void> {
   document.title = "Netwick";
   buildShell(root, {
     home: () => void resetTo(homeScreen),
+    repair: () => void go(repairScreen),
     tools: () => void go(() => toolsScreen()),
     settings: () => void go(settingsScreen),
     help: () => void go(helpScreen),
+    demoChanged: () => {
+      markNav("home");
+      void resetTo(homeScreen);
+    },
   });
   setUndoHandler(confirmUndo);
   Events.On(AppNavigate, (ev: { data: string }) => {

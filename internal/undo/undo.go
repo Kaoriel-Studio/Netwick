@@ -50,7 +50,9 @@ func NewBackupID(now time.Time) string {
 
 func ValidBackupID(s string) bool { return backupRe.MatchString(s) }
 
-var reversible = map[string]bool{"F04": true, "F06": true, "F07": true, "F08": true, "F09": true, "F10": true}
+var reversible = map[string]bool{"F04": true, "F06": true, "F07": true, "F08": true, "F09": true, "F10": true, "F14": true, "F15": true}
+
+const BonjourService = "Bonjour Service"
 
 func validIPv4(s string) bool {
 	ip := net.ParseIP(s)
@@ -95,8 +97,11 @@ func Validate(e Entry) error {
 	}
 	if e.Service != nil {
 		payloads++
-		if (e.FixID != "F07" && e.FixID != "F09") || !platform.ValidStartType(e.Service.StartType) {
+		if (e.FixID != "F07" && e.FixID != "F09" && e.FixID != "F15") || !platform.ValidStartType(e.Service.StartType) {
 			return errors.New("bad service")
+		}
+		if e.FixID == "F15" && e.Service.Name != BonjourService {
+			return errors.New("bad service name")
 		}
 		if e.FixID == "F07" && e.Service.Name != "vgc" {
 			return errors.New("bad service name")
@@ -113,7 +118,7 @@ func Validate(e Entry) error {
 	}
 	if e.HostsBackupID != "" {
 		payloads++
-		if e.FixID != "F10" || !ValidBackupID(e.HostsBackupID) {
+		if (e.FixID != "F10" && e.FixID != "F14") || !ValidBackupID(e.HostsBackupID) {
 			return errors.New("bad backup id")
 		}
 	}

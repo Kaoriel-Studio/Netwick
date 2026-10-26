@@ -20,6 +20,8 @@ export enum Opener {
     OpenDateTime = "datetime",
     OpenSystemInfo = "msinfo",
     OpenDeviceManager = "devmgmt",
+    OpenPower = "power",
+    OpenGameMode = "gamemode",
 };
 
 export enum Risk {

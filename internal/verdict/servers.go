@@ -13,7 +13,9 @@ var NetworkPlan = []core.Step{
 	core.Guide("G10"),
 	core.Fix("F02"),
 	core.Fix("F03"),
+	core.Fix("F14"),
 	core.Fix("F04"),
+	core.Fix("F15"),
 	core.Fix("F05"),
 	core.Guide("G08"),
 	core.Fix("F06"),
@@ -23,6 +25,7 @@ type ServerSummary struct {
 	CoreDown   []string `json:"coreDown"`
 	ExtraDown  []string `json:"extraDown"`
 	Mixed      []string `json:"mixed"`
+	Routed     []string `json:"routed"`
 	LogErrors  []string `json:"logErrors"`
 	PinnedDead []string `json:"pinnedDead"`
 	CertIssue  []string `json:"certIssue"`
@@ -30,10 +33,14 @@ type ServerSummary struct {
 }
 
 func Summarize(reports []probe.HostReport, logHosts map[string]int) ServerSummary {
-	s := ServerSummary{CoreDown: []string{}, ExtraDown: []string{}, Mixed: []string{}, LogErrors: []string{}, PinnedDead: []string{}, CertIssue: []string{}}
+	s := ServerSummary{CoreDown: []string{}, ExtraDown: []string{}, Mixed: []string{}, Routed: []string{}, LogErrors: []string{}, PinnedDead: []string{}, CertIssue: []string{}}
 	sum, n := 0, 0
 	for _, r := range reports {
+		routed := false
 		for _, p := range r.Probes {
+			if p.Pinned && p.OK() {
+				routed = true
+			}
 			if p.OK() {
 				sum += p.LatencyMs
 				n++
@@ -50,6 +57,8 @@ func Summarize(reports []probe.HostReport, logHosts map[string]int) ServerSummar
 			s.CoreDown = append(s.CoreDown, r.Host)
 		case r.Down():
 			s.ExtraDown = append(s.ExtraDown, r.Host)
+		case r.Mixed() && routed:
+			s.Routed = append(s.Routed, r.Host)
 		case r.Mixed():
 			if logHosts[r.Host] > 0 {
 				s.LogErrors = append(s.LogErrors, r.Host)
@@ -61,7 +70,7 @@ func Summarize(reports []probe.HostReport, logHosts map[string]int) ServerSummar
 	if n > 0 {
 		s.AvgLatency = sum / n
 	}
-	for _, l := range [][]string{s.CoreDown, s.ExtraDown, s.Mixed, s.LogErrors, s.PinnedDead, s.CertIssue} {
+	for _, l := range [][]string{s.CoreDown, s.ExtraDown, s.Mixed, s.Routed, s.LogErrors, s.PinnedDead, s.CertIssue} {
 		sort.Strings(l)
 	}
 	return s
@@ -115,11 +124,20 @@ func Servers(id, group string, reports []probe.HostReport, logHosts map[string]i
 			res.Status = core.StatusWarn
 			res.MessageKey = "servers.client_errors"
 			res.Params["hosts"] = strings.Join(s.LogErrors, ", ")
-			res.Steps = core.AppendSteps(res.Steps, core.Fix("F01"), core.Fix("F02"))
+			res.Steps = core.AppendSteps(res.Steps, core.Fix("F14"), core.Fix("F01"), core.Fix("F02"), core.Fix("F11"))
 		}
 	}
 	if len(s.Mixed) > 0 {
 		res.AddDetail(core.StatusInfo, "servers.mixed", map[string]string{"hosts": strings.Join(s.Mixed, ", ")})
+		if res.Status == core.StatusOK {
+			res.Status = core.StatusInfo
+			res.MessageKey = "servers.mixed"
+			res.Params["hosts"] = strings.Join(s.Mixed, ", ")
+			res.FixIDs = append(res.FixIDs, "F14")
+		}
+	}
+	if len(s.Routed) > 0 {
+		res.AddDetail(core.StatusOK, "servers.routed", map[string]string{"hosts": strings.Join(s.Routed, ", ")})
 	}
 	if len(s.ExtraDown) > 0 {
 		res.AddDetail(core.StatusInfo, "servers.extra_down", map[string]string{"hosts": strings.Join(s.ExtraDown, ", ")})

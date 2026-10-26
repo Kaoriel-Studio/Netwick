@@ -62,3 +62,32 @@ func TestUntouched(t *testing.T) {
 		t.Error("plain comment treated as section")
 	}
 }
+
+func TestApplyRoutesAndUndo(t *testing.T) {
+	in := base + "104.16.56.21 auth.riotgames.com\r\n# >>> NETWICK >>> (managed routes, added 2026-01-01 — safe to delete)\r\n65.9.46.9 valorant.secure.dyn.riotcdn.net\r\n# <<< NETWICK <<<\r\n"
+	routes := map[string]string{"valorant.secure.dyn.riotcdn.net": "65.9.46.10", "auth.riotgames.com": "104.16.119.50"}
+	out, removed := ApplyRoutes([]byte(in), routes, "2026-10-26")
+	s := string(out)
+	if !strings.Contains(s, "65.9.46.10         valorant.secure.dyn.riotcdn.net\r\n") || !strings.Contains(s, "added 2026-10-26") {
+		t.Fatalf("routes not written:\n%s", s)
+	}
+	if strings.Contains(s, "65.9.46.9") || strings.Contains(s, "104.16.56.21") {
+		t.Fatalf("old lines kept:\n%s", s)
+	}
+	if !strings.Contains(s, "10.0.0.5 nas.home") || len(removed) != 4 {
+		t.Fatalf("removed %v", removed)
+	}
+	p := Parse(out)
+	if p.Pinned["auth.riotgames.com"] != "104.16.119.50" || len(p.Sections) != 1 {
+		t.Fatalf("parsed %+v", p)
+	}
+	back := string(Restore(RemoveManaged(out), removed))
+	for _, want := range []string{"104.16.56.21 auth.riotgames.com", "65.9.46.9 valorant.secure.dyn.riotcdn.net", "10.0.0.5 nas.home"} {
+		if !strings.Contains(back, want) {
+			t.Errorf("undo lost %q:\n%s", want, back)
+		}
+	}
+	if strings.Contains(back, "65.9.46.10") {
+		t.Errorf("undo kept new route:\n%s", back)
+	}
+}

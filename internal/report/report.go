@@ -6,6 +6,7 @@ import (
 	"sort"
 	"strings"
 	"time"
+	"unicode"
 
 	"github.com/kaoriel-studio/netwick/internal/core"
 	"github.com/kaoriel-studio/netwick/internal/verdict"
@@ -93,15 +94,28 @@ func replaceFold(s, old, repl string) string {
 	}
 }
 
+func isWordRune(r rune) bool {
+	return r == '_' || unicode.IsLetter(r) || unicode.IsDigit(r)
+}
+
 func replaceWord(s, word, repl string) string {
-	re := regexp.MustCompile(`(?i)(^|[^\p{L}\p{N}_])` + regexp.QuoteMeta(word) + `($|[^\p{L}\p{N}_])`)
-	for {
-		next := re.ReplaceAllString(s, "${1}"+repl+"${2}")
-		if next == s {
-			return s
-		}
-		s = next
+	if word == "" {
+		return s
 	}
+	src := []rune(s)
+	w := []rune(strings.ToLower(word))
+	var b strings.Builder
+	for i := 0; i < len(src); {
+		if i+len(w) <= len(src) && strings.EqualFold(string(src[i:i+len(w)]), string(w)) &&
+			(i == 0 || !isWordRune(src[i-1])) && (i+len(w) == len(src) || !isWordRune(src[i+len(w)])) {
+			b.WriteString(repl)
+			i += len(w)
+			continue
+		}
+		b.WriteRune(src[i])
+		i++
+	}
+	return b.String()
 }
 
 func (s Sanitizer) Map(m map[string]string) map[string]string {

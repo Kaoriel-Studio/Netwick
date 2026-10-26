@@ -4,8 +4,13 @@ export * as FixService from "../bindings/github.com/kaoriel-studio/netwick/inter
 export * as KBService from "../bindings/github.com/kaoriel-studio/netwick/internal/services/kbservice.js";
 export * as ReportService from "../bindings/github.com/kaoriel-studio/netwick/internal/services/reportservice.js";
 export * as ToolsService from "../bindings/github.com/kaoriel-studio/netwick/internal/services/toolsservice.js";
-export type { RunSummary, FixView, Outcome, GuideView, AppInfo, UndoItem, Crosshair, Link, SensGame, SensResult, ApplyOptions } from "../bindings/github.com/kaoriel-studio/netwick/internal/services/models.js";
+export * as ProfileService from "../bindings/github.com/kaoriel-studio/netwick/internal/services/profileservice.js";
+export * as DemoService from "../bindings/github.com/kaoriel-studio/netwick/internal/services/demoservice.js";
+export type { RunSummary, FixView, Outcome, GuideView, AppInfo, UndoItem, Crosshair, Link, SensGame, SensResult, ApplyOptions, NodesView, DemoInfo, RebootOutcome, QualityView } from "../bindings/github.com/kaoriel-studio/netwick/internal/services/models.js";
 export type { Result, Step, Detail } from "../bindings/github.com/kaoriel-studio/netwick/internal/core/models.js";
+export type { RoutePlan } from "../bindings/github.com/kaoriel-studio/netwick/internal/worker/models.js";
+export type { Result as ProbeResult } from "../bindings/github.com/kaoriel-studio/netwick/internal/probe/models.js";
+export type { View as ProfileView, Medal, Point } from "../bindings/github.com/kaoriel-studio/netwick/internal/profile/models.js";
 export type { Verdict } from "../bindings/github.com/kaoriel-studio/netwick/internal/verdict/models.js";
 export type { Entry as KBEntry, Match as KBMatch } from "../bindings/github.com/kaoriel-studio/netwick/internal/kb/models.js";
 export type { Settings } from "../bindings/github.com/kaoriel-studio/netwick/internal/app/models.js";

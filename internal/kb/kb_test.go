@@ -56,7 +56,7 @@ func TestIntegrity(t *testing.T) {
 
 func TestOrderOfVAN68(t *testing.T) {
 	e, _ := db(t).Get("VAN 68")
-	want := []string{"reboot", "C03", "F07", "G01", "G02", "G11", "F09", "G10", "official"}
+	want := []string{"F13", "C03", "F07", "reboot", "G01", "G02", "G11", "F09", "G10", "official"}
 	for i, s := range e.Steps {
 		if i >= len(want) || s.ID != want[i] {
 			t.Fatalf("steps %v", e.Steps)

@@ -57,7 +57,7 @@ type Verdict struct {
 var checkOrder = map[string]int{}
 
 func init() {
-	order := []string{"C01", "C17", "C02", "C10", "C12", "C11", "C03", "C09", "C04", "C05", "C19", "C18", "C21", "C06", "C07", "C08", "C13", "C14", "C15", "C16", "C20"}
+	order := []string{"C01", "C17", "C02", "C22", "C10", "C12", "C11", "C03", "C09", "C04", "C05", "C19", "C18", "C21", "C20", "C06", "C07", "C08", "C13", "C14", "C15", "C16", "C23"}
 	for i, id := range order {
 		checkOrder[id] = i
 	}

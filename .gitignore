@@ -20,3 +20,35 @@ build/bin/
 coverage.out
 *.test
 frontend/*.tsbuildinfo
+
+# image-generation prompts and design drafts (local only)
+design/
+
+# local builds and run artifacts
+/netwick
+/netwick-server
+/netwick-demo
+*.out
+*.pprof
+tmp/
+.cache/
+
+# frontend tooling
+node_modules/
+.vite/
+*.tsbuildinfo
+
+# editors, OS, AI tools
+.vscode/
+*.swp
+*.orig
+Thumbs.db
+.claude/
+.codex/
+.cursor/
+
+# local data and secrets
+profile.json
+*.pem
+*.key
+*.pfx

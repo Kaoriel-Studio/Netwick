@@ -20,7 +20,9 @@ func TestParseArgs(t *testing.T) {
 		{"--worker", "--pipe=" + pipe, "--actions=F02,F05,F10"},
 		{"--worker", "--pipe=" + pipe, "--actions=F04", "--dns-adapter-luid=123"},
 		{"--worker", "--pipe=" + pipe, "--actions=UNDO"},
-		{"--worker", "--pipe=" + pipe, "--actions=F05", "--skip-restore-point"},
+		{"--worker", "--pipe=" + pipe, "--actions=F05"},
+		{"--worker", "--pipe=" + pipe, "--actions=F14", "--route-hosts=auth.riotgames.com,valorant.secure.dyn.riotcdn.net"},
+		{"--worker", "--pipe=" + pipe, "--actions=F13,F15"},
 	}
 	for _, g := range good {
 		a, err := ParseArgs(g)
@@ -48,10 +50,18 @@ func TestParseArgs(t *testing.T) {
 		{"--worker", "--pipe=" + pipe, "--actions=F04", "--dns-adapter-luid=-1"},
 		{"--worker", "--pipe=" + pipe, "--actions=F02;calc.exe"},
 		{"--worker", "--pipe=" + pipe, "--actions=F02", "--path=C:\\Windows"},
-		{"--worker", "--pipe=" + pipe, "--actions=F02", "--skip-restore-point=yes"},
+		{"--worker", "--pipe=" + pipe, "--actions=F02", "--skip-restore-point"},
 		{"--worker", "--pipe=" + pipe, "--pipe=" + pipe, "--actions=F02"},
 		{"--worker", "--pipe=" + pipe, "--actions=f02"},
 		{"--worker", "--pipe=" + pipe, "--actions=F02", "extra"},
+		{"--worker", "--pipe=" + pipe, "--actions=F14"},
+		{"--worker", "--pipe=" + pipe, "--actions=F02", "--route-hosts=auth.riotgames.com"},
+		{"--worker", "--pipe=" + pipe, "--actions=F14", "--route-hosts=evil.com"},
+		{"--worker", "--pipe=" + pipe, "--actions=F14", "--route-hosts=Auth.RiotGames.com"},
+		{"--worker", "--pipe=" + pipe, "--actions=F14", "--route-hosts=auth.riotgames.com,auth.riotgames.com"},
+		{"--worker", "--pipe=" + pipe, "--actions=F14", "--route-hosts=riotgames.com.evil.com"},
+		{"--worker", "--pipe=" + pipe, "--actions=F11"},
+		{"--worker", "--pipe=" + pipe, "--actions=F12"},
 	}
 	for _, b := range bad {
 		if _, err := ParseArgs(b); err == nil {
@@ -95,9 +105,6 @@ func TestApplyAndUndo(t *testing.T) {
 	beforeHosts, _ := sys.ReadFile(sys.HostsPath(), 0)
 
 	resp := run(t, x, []string{"F04", "F06", "F07", "F08", "F10"}, luid, Request{})
-	if resp.RestorePoint != RPCreated {
-		t.Fatalf("restore point %s", resp.RestorePoint)
-	}
 	var entries []undo.Entry
 	for _, r := range resp.Results {
 		if !r.OK {
@@ -169,22 +176,6 @@ func TestUndoRejectsForeign(t *testing.T) {
 	}
 }
 
-func TestRestorePointFailureStops(t *testing.T) {
-	sys := fake.New(fake.AllOK)
-	x := &Executor{Sys: sys, Act: &noRP{sys}}
-	resp := run(t, x, []string{"F07"}, 0, Request{})
-	if resp.RestorePoint != RPFailed || len(resp.Results) != 0 {
-		t.Fatalf("%+v", resp)
-	}
-	if s, _ := sys.Service("vgc"); s.StartType != platform.StartManual {
-		t.Fatal("changed without restore point")
-	}
-}
-
-type noRP struct{ *fake.System }
-
-func (n *noRP) CreateRestorePoint(string) error { return platform.ErrUnavailable }
-
 func TestRestartClient(t *testing.T) {
 	sys := fake.New(fake.AllOK)
 	if err := RestartClient(sys, sys, 0); err != nil {
@@ -209,4 +200,68 @@ func TestRestartClient(t *testing.T) {
 		}
 	}
 	t.Fatal("vanguard tray must never be terminated")
+}
+
+func TestVAL43Repair(t *testing.T) {
+	sys := fake.New(fake.VAL43)
+	x := &Executor{Sys: sys, Act: sys}
+	if r := ApplyLocal(sys, sys, "F11", 0); !r.OK || !r.Changed {
+		t.Fatalf("F11 %+v", r)
+	}
+	if _, err := sys.Stat(`C:\Users\Player\AppData\Local\Riot Games\Riot Client\Cache`); err == nil {
+		t.Fatal("cache not removed")
+	}
+	if r := ApplyLocal(sys, sys, "F11", 0); !r.OK || r.Changed {
+		t.Fatalf("second F11 %+v", r)
+	}
+	if r := ApplyLocal(sys, sys, "F12", 0); !r.OK || !r.Changed {
+		t.Fatalf("F12 %+v", r)
+	}
+	if err := sys.RemoveTree(`C:\Windows\System32`); err == nil {
+		t.Fatal("RemoveTree outside Riot folders must fail")
+	}
+	plans := PlanRoutes(context.Background(), sys, []string{"valorant.secure.dyn.riotcdn.net", "auth.riotgames.com"})
+	if !plans[0].Needed() || plans[0].IP != "65.9.46.10" || plans[1].Needed() {
+		t.Fatalf("plans %+v", plans)
+	}
+	resp := x.Run(context.Background(), Args{Actions: []string{"F14", "F15", "F13"}, RouteHosts: []string{"valorant.secure.dyn.riotcdn.net", "clientconfig.rpg.riotgames.com"}}, Request{})
+	for _, r := range resp.Results {
+		if !r.OK || !r.Changed {
+			t.Fatalf("%s %+v", r.FixID, r)
+		}
+	}
+	b, _ := sys.ReadFile(sys.HostsPath(), 0)
+	p := hostsfile.Parse(b)
+	if p.Pinned["valorant.secure.dyn.riotcdn.net"] != "65.9.46.10" || p.Pinned["clientconfig.rpg.riotgames.com"] != "104.18.156.37" {
+		t.Fatalf("hosts:\n%s", b)
+	}
+	if bj, _ := sys.Service(checks.BonjourService); bj.State != platform.StateStopped {
+		t.Fatalf("bonjour %+v", bj)
+	}
+	if err := RestartClient(sys, sys, 0); err != nil {
+		t.Fatal(err)
+	}
+	var entries []undo.Entry
+	for _, r := range resp.Results {
+		if r.Undo != nil {
+			if err := undo.Validate(*r.Undo); err != nil {
+				t.Fatalf("%s undo invalid: %v", r.FixID, err)
+			}
+			entries = append(entries, *r.Undo)
+		}
+	}
+	if len(entries) != 2 {
+		t.Fatalf("undo entries %d", len(entries))
+	}
+	done, _ := x.undoAll(context.Background(), entries)
+	if len(done) != 2 {
+		t.Fatalf("undone %v", done)
+	}
+	b, _ = sys.ReadFile(sys.HostsPath(), 0)
+	if len(hostsfile.Parse(b).RiotEntries) != 0 {
+		t.Fatalf("routes left after undo:\n%s", b)
+	}
+	if bj, _ := sys.Service(checks.BonjourService); bj.State != platform.StateRunning {
+		t.Fatalf("bonjour not restarted %+v", bj)
+	}
 }

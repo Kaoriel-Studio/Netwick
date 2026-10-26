@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/kaoriel-studio/netwick/internal/checks"
-	"github.com/kaoriel-studio/netwick/internal/fixes"
 	"github.com/kaoriel-studio/netwick/internal/hostsfile"
 	"github.com/kaoriel-studio/netwick/internal/platform"
 	"github.com/kaoriel-studio/netwick/internal/undo"
@@ -19,13 +18,7 @@ var PublicDNS = []string{"8.8.8.8", "8.8.4.4"}
 
 var RiotProcesses = []string{"RiotClientServices", "RiotClientUx", "RiotClientUxRender", "RiotClientCrashHandler", "VALORANT", "VALORANT-Win64-Shipping"}
 
-const (
-	RPCreated  = "created"
-	RPFailed   = "failed"
-	RPSkipped  = "skipped"
-	RPNotUsed  = "not_needed"
-	MaxMessage = 64 * 1024
-)
+const MaxMessage = 64 * 1024
 
 type Request struct {
 	Undo []undo.Entry `json:"undo"`
@@ -41,9 +34,8 @@ type ActionResult struct {
 }
 
 type Response struct {
-	RestorePoint string         `json:"restorePoint"`
-	Results      []ActionResult `json:"results"`
-	UndoneIDs    []string       `json:"undoneIds"`
+	Results   []ActionResult `json:"results"`
+	UndoneIDs []string       `json:"undoneIds"`
 }
 
 type Executor struct {
@@ -59,30 +51,11 @@ func (x *Executor) now() time.Time {
 	return time.Now()
 }
 
-func needsRestorePoint(actions []string) bool {
-	for _, a := range actions {
-		if f, ok := fixes.Get(a); ok && f.RestorePoint {
-			return true
-		}
-	}
-	return false
-}
-
 func (x *Executor) Run(ctx context.Context, a Args, req Request) Response {
-	resp := Response{RestorePoint: RPNotUsed, Results: []ActionResult{}, UndoneIDs: []string{}}
+	resp := Response{Results: []ActionResult{}, UndoneIDs: []string{}}
 	if len(a.Actions) == 1 && a.Actions[0] == ActionUndo {
 		resp.UndoneIDs, resp.Results = x.undoAll(ctx, req.Undo)
 		return resp
-	}
-	if needsRestorePoint(a.Actions) {
-		if a.SkipRestorePoint {
-			resp.RestorePoint = RPSkipped
-		} else if err := x.Act.CreateRestorePoint("Netwick: before changes"); err != nil {
-			resp.RestorePoint = RPFailed
-			return resp
-		} else {
-			resp.RestorePoint = RPCreated
-		}
 	}
 	for _, id := range a.Actions {
 		if ctx.Err() != nil {
@@ -144,6 +117,12 @@ func (x *Executor) apply(ctx context.Context, id string, a Args) ActionResult {
 		return x.applyKiller(ctx, id)
 	case "F10":
 		return x.applyHosts(ctx, id)
+	case "F13":
+		return x.restartVGC(ctx, id)
+	case "F14":
+		return x.applyRoutes(ctx, id, a.RouteHosts)
+	case "F15":
+		return x.stopBonjour(ctx, id)
 	}
 	return fail(id, "fix.error.unknown")
 }
@@ -344,6 +323,26 @@ func (x *Executor) undoOne(ctx context.Context, e undo.Entry) error {
 		}
 		_ = x.Act.FlushDNS(ctx)
 		return nil
+	case "F14":
+		removed, err := os.ReadFile(x.removedPath(e.HostsBackupID))
+		if err != nil {
+			return err
+		}
+		cur, err := x.Sys.ReadFile(x.Sys.HostsPath(), 4<<20)
+		if err != nil {
+			return err
+		}
+		next := hostsfile.RemoveManaged(cur)
+		if lines := strings.Split(strings.ReplaceAll(string(removed), "\r", ""), "\n"); len(removed) > 0 {
+			next = hostsfile.Restore(next, lines)
+		}
+		if err := x.Act.WriteHosts(next); err != nil {
+			return err
+		}
+		_ = x.Act.FlushDNS(ctx)
+		return nil
+	case "F15":
+		return x.Act.StartService(checks.BonjourService)
 	}
 	return errSkip
 }

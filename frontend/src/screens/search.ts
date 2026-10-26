@@ -1,6 +1,6 @@
 import { h, icon, mount } from "../dom";
 import { t, tl } from "../i18n";
-import { go, link, backButton } from "../app";
+import { go, link, backButton, screenHead } from "../app";
 import { KBService } from "../api";
 import type { KBEntry, KBMatch, Step } from "../api";
 import { wizardScreen } from "./wizard";
@@ -62,7 +62,7 @@ export function searchScreen(initial: string): HTMLElement {
   if (initial) void run();
   return h("section", { class: "screen search" },
     backButton(),
-    h("h1", { class: "screen-title", text: t("search.title") }),
+    ...screenHead(t("search.kicker"), t("search.title")),
     h("div", { class: "row" }, input, h("button", { class: "btn btn-primary", type: "button", on: { click: () => void run() } }, icon("search"), t("home.find"))),
     h("p", { class: "muted small", text: t("search.examples") }),
     h("p", { class: "notice notice-info small", text: t("search.caveat") }),

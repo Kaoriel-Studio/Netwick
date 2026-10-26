@@ -41,8 +41,7 @@ const (
 	SrcServerStatus      = "https://status.riotgames.com/"
 	SrcRiotSupport       = "https://support.riotgames.com/en-us/valorant"
 
-	SrcMSRestorePoint = "https://support.microsoft.com/en-us/windows/system-restore-a5ae3ed9-07c4-fd56-45ee-096777ecd14e"
-	SrcMSWebView2     = "https://developer.microsoft.com/en-us/microsoft-edge/webview2/"
+	SrcMSWebView2 = "https://developer.microsoft.com/en-us/microsoft-edge/webview2/"
 )
 
 var RiotDomains = []string{"support.riotgames.com", "www.riotgames.com", "status.riotgames.com"}

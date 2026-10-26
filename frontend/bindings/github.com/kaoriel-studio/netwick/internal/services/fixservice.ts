@@ -13,6 +13,10 @@ export function Apply(id: string, opts: $models.ApplyOptions): $CancellablePromi
     return $Call.ByID(1878451123, id, opts);
 }
 
+export function CancelReboot(): $CancellablePromise<boolean> {
+    return $Call.ByID(780111862);
+}
+
 export function CompleteGuide(id: string): $CancellablePromise<boolean> {
     return $Call.ByID(90433930, id);
 }
@@ -29,8 +33,16 @@ export function LaunchGame(): $CancellablePromise<$models.Outcome | null> {
     return $Call.ByID(1046128788);
 }
 
+export function Nodes(): $CancellablePromise<$models.NodesView | null> {
+    return $Call.ByID(4008991794);
+}
+
 export function Open(target: string): $CancellablePromise<void> {
     return $Call.ByID(1625281521, target);
+}
+
+export function Reboot(): $CancellablePromise<$models.RebootOutcome> {
+    return $Call.ByID(3476868928);
 }
 
 export function UndoAll(): $CancellablePromise<$models.UndoOutcome | null> {

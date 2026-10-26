@@ -10,9 +10,11 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/kaoriel-studio/netwick/internal/checks"
 	"github.com/kaoriel-studio/netwick/internal/core"
 	"github.com/kaoriel-studio/netwick/internal/fixes"
 	"github.com/kaoriel-studio/netwick/internal/platform"
+	"github.com/kaoriel-studio/netwick/internal/riotstatus"
 	"github.com/kaoriel-studio/netwick/internal/undo"
 	"github.com/kaoriel-studio/netwick/internal/worker"
 )
@@ -46,6 +48,7 @@ type Env struct {
 	OpenURL    func(string) error
 	OpenSystem func(fixes.Opener) error
 	Simulate   func(string)
+	ResetDemo  func(string) bool
 }
 
 var allowedHosts = map[string]bool{
@@ -78,16 +81,16 @@ func AllowedURL(raw string) bool {
 }
 
 type Settings struct {
-	Language     string `json:"language"`
-	Theme        string `json:"theme"`
-	RestorePoint bool   `json:"restorePoint"`
-	UpdateCheck  bool   `json:"updateCheck"`
-	Tray         bool   `json:"tray"`
-	WatchClient  bool   `json:"watchClient"`
+	Language    string `json:"language"`
+	Theme       string `json:"theme"`
+	UpdateCheck bool   `json:"updateCheck"`
+	Tray        bool   `json:"tray"`
+	WatchClient bool   `json:"watchClient"`
+	Region      string `json:"region"`
 }
 
 func DefaultSettings() Settings {
-	return Settings{Language: "", Theme: "system", RestorePoint: true}
+	return Settings{Language: "", Theme: "system", Region: riotstatus.DefaultRegion}
 }
 
 func (s Settings) Valid() bool {
@@ -101,7 +104,7 @@ func (s Settings) Valid() bool {
 	default:
 		return false
 	}
-	return true
+	return s.Region == "" || riotstatus.ValidRegion(s.Region)
 }
 
 type Store struct {
@@ -119,6 +122,10 @@ func NewStore(env *Env) *Store {
 			s.settings = st
 		}
 	}
+	if s.settings.Region == "" {
+		s.settings.Region = riotstatus.DefaultRegion
+	}
+	checks.SetRegion(s.settings.Region)
 	j, _ := undo.Open(filepath.Join(env.DataDir, "undo.json"))
 	s.Journal = j
 	return s
@@ -136,9 +143,13 @@ func (s *Store) SaveSettings(st Settings) error {
 	if !st.Valid() {
 		return errors.New("invalid settings")
 	}
+	if st.Region == "" {
+		st.Region = riotstatus.DefaultRegion
+	}
 	s.mu.Lock()
 	s.settings = st
 	s.mu.Unlock()
+	checks.SetRegion(st.Region)
 	b, _ := json.MarshalIndent(st, "", "  ")
 	return undo.WriteAtomic(s.settingsPath(), b)
 }

@@ -5,12 +5,17 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/kaoriel-studio/netwick/internal/app"
 	"github.com/kaoriel-studio/netwick/internal/checks"
+	"github.com/kaoriel-studio/netwick/internal/core"
 	"github.com/kaoriel-studio/netwick/internal/fixes"
+	"github.com/kaoriel-studio/netwick/internal/logscan"
 	"github.com/kaoriel-studio/netwick/internal/platform"
+	"github.com/kaoriel-studio/netwick/internal/probe"
+	"github.com/kaoriel-studio/netwick/internal/profile"
 	"github.com/kaoriel-studio/netwick/internal/undo"
 	"github.com/kaoriel-studio/netwick/internal/worker"
 )
@@ -24,7 +29,6 @@ type FixView struct {
 	AskOnDemand    bool   `json:"askOnDemand"`
 	Adapter        string `json:"adapter"`
 	AdapterMissing bool   `json:"adapterMissing"`
-	WillRestore    bool   `json:"willRestorePoint"`
 	Allowed        bool   `json:"allowed"`
 	BlockReason    string `json:"blockReason"`
 }
@@ -34,9 +38,9 @@ type GuideView struct {
 }
 
 type ApplyOptions struct {
-	OnDemand         string `json:"onDemand"`
-	Context          string `json:"context"`
-	SkipRestorePoint bool   `json:"skipRestorePoint"`
+	OnDemand string   `json:"onDemand"`
+	Context  string   `json:"context"`
+	Hosts    []string `json:"hosts"`
 }
 
 type Outcome struct {
@@ -45,8 +49,6 @@ type Outcome struct {
 	Changed         bool   `json:"changed"`
 	ErrorKey        string `json:"errorKey"`
 	RebootRequired  bool   `json:"rebootRequired"`
-	RestorePoint    string `json:"restorePoint"`
-	NeedConfirmNoRP bool   `json:"needConfirmNoRestorePoint"`
 	BlockedOnDemand bool   `json:"blockedOnDemand"`
 	Declined        bool   `json:"declined"`
 	UndoAvailable   bool   `json:"undoAvailable"`
@@ -103,7 +105,6 @@ func (f *FixService) Describe(id string, context string) (*FixView, error) {
 		return nil, ErrInvalid
 	}
 	v := &FixView{Fix: fix, Allowed: true}
-	v.WillRestore = fix.RestorePoint && f.st.Store.Settings().RestorePoint
 	if !contextAllowed(fix, context) {
 		v.Allowed = false
 		v.BlockReason = "scenario"
@@ -120,7 +121,34 @@ func (f *FixService) Describe(id string, context string) (*FixView, error) {
 			v.BlockReason = "adapter"
 		}
 	}
+	sys := f.st.Env.Sys
+	switch id {
+	case "F13":
+		if svc, err := sys.Service("vgc"); err != nil || !svc.Exists {
+			v.Allowed = false
+			v.BlockReason = "vgc_missing"
+		}
+	case "F15":
+		if svc, err := sys.Service(checks.BonjourService); err != nil || !svc.Exists || svc.State != platform.StateRunning {
+			v.Allowed = false
+			v.BlockReason = "not_needed"
+		}
+	}
 	return v, nil
+}
+
+func validRouteHosts(hosts []string) bool {
+	if len(hosts) == 0 || len(hosts) > worker.MaxRouteHosts {
+		return false
+	}
+	seen := map[string]bool{}
+	for _, h := range hosts {
+		if seen[h] || !probe.IsRiotHost(h) || h != strings.ToLower(h) {
+			return false
+		}
+		seen[h] = true
+	}
+	return true
 }
 
 func (f *FixService) Guide(id string) (*GuideView, error) {
@@ -147,6 +175,10 @@ func (f *FixService) Apply(id string, opts ApplyOptions) (*Outcome, error) {
 	default:
 		return nil, ErrInvalid
 	}
+	if !f.st.fixMu.TryLock() {
+		return nil, ErrBusy
+	}
+	defer f.st.fixMu.Unlock()
 	out := &Outcome{FixID: id}
 	if !contextAllowed(fix, opts.Context) {
 		out.ErrorKey = "fix.error.scenario"
@@ -156,17 +188,26 @@ func (f *FixService) Apply(id string, opts ApplyOptions) (*Outcome, error) {
 		out.BlockedOnDemand = true
 		return out, nil
 	}
-	if id == "F01" {
-		err := worker.RestartClient(f.st.Env.Sys, f.st.Env.Act, 2*time.Second)
-		out.OK = err == nil
-		out.Changed = out.OK
-		if err != nil {
-			out.ErrorKey = "fix.error.no_client"
-		}
+	if fix.Local {
+		r := worker.ApplyLocal(f.st.Env.Sys, f.st.Env.Act, id, 2*time.Second)
+		out.OK, out.Changed, out.ErrorKey = r.OK, r.Changed, r.ErrorKey
 		f.st.addHistory(FixRecord{FixID: id, At: time.Now(), OK: out.OK})
+		if out.OK && out.Changed {
+			f.st.Prof.Bump(profile.CFixes)
+		}
 		return out, nil
 	}
 	a := worker.Args{Pipe: newPipe(), Actions: []string{id}}
+	if id == "F14" {
+		hosts := opts.Hosts
+		if len(hosts) == 0 {
+			hosts = append([]string{}, probe.CoreHosts...)
+		}
+		if !validRouteHosts(hosts) {
+			return nil, ErrInvalid
+		}
+		a.RouteHosts = hosts
+	}
 	if id == "F04" {
 		ad, ok := f.dnsAdapter()
 		if !ok {
@@ -174,9 +215,6 @@ func (f *FixService) Apply(id string, opts ApplyOptions) (*Outcome, error) {
 			return out, nil
 		}
 		a.DNSAdapterLUID = ad.LUID
-	}
-	if !f.st.Store.Settings().RestorePoint || opts.SkipRestorePoint {
-		a.SkipRestorePoint = true
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 	defer cancel()
@@ -188,12 +226,6 @@ func (f *FixService) Apply(id string, opts ApplyOptions) (*Outcome, error) {
 	}
 	if err != nil {
 		out.ErrorKey = "fix.error.worker"
-		return out, nil
-	}
-	out.RestorePoint = resp.RestorePoint
-	if resp.RestorePoint == worker.RPFailed {
-		out.NeedConfirmNoRP = true
-		out.ErrorKey = "fix.error.restore_point"
 		return out, nil
 	}
 	for _, r := range resp.Results {
@@ -213,6 +245,9 @@ func (f *FixService) Apply(id string, opts ApplyOptions) (*Outcome, error) {
 	}
 	out.UndoAvailable = len(f.st.Store.Journal.List()) > 0
 	f.st.addHistory(FixRecord{FixID: id, At: time.Now(), OK: out.OK})
+	if out.OK && out.Changed {
+		f.st.Prof.Bump(profile.CFixes)
+	}
 	return out, nil
 }
 
@@ -225,6 +260,10 @@ func (f *FixService) UndoList() []UndoItem {
 }
 
 func (f *FixService) UndoAll() (*UndoOutcome, error) {
+	if !f.st.fixMu.TryLock() {
+		return nil, ErrBusy
+	}
+	defer f.st.fixMu.Unlock()
 	entries := f.st.Store.Journal.List()
 	out := &UndoOutcome{Failed: []string{}}
 	if len(entries) == 0 {
@@ -245,6 +284,9 @@ func (f *FixService) UndoAll() (*UndoOutcome, error) {
 	}
 	_ = f.st.Store.Journal.Remove(resp.UndoneIDs)
 	out.Undone = len(resp.UndoneIDs)
+	if out.Undone > 0 {
+		f.st.Prof.Bump(profile.CUndos)
+	}
 	for _, r := range resp.Results {
 		if !r.OK {
 			out.Failed = append(out.Failed, r.FixID)
@@ -261,6 +303,68 @@ func (f *FixService) UndoAll() (*UndoOutcome, error) {
 
 func (f *FixService) LaunchGame() (*Outcome, error) {
 	return f.Apply("F01", ApplyOptions{})
+}
+
+type RebootOutcome struct {
+	OK        bool `json:"ok"`
+	Simulated bool `json:"simulated"`
+}
+
+func (f *FixService) Reboot() RebootOutcome {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	err := f.st.Env.Act.ScheduleReboot(ctx)
+	f.st.addHistory(FixRecord{FixID: "reboot", At: time.Now(), OK: err == nil})
+	return RebootOutcome{OK: err == nil, Simulated: f.st.Env.Demo}
+}
+
+func (f *FixService) CancelReboot() bool {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	return f.st.Env.Act.CancelReboot(ctx) == nil
+}
+
+type NodesView struct {
+	Plans     []worker.RoutePlan `json:"plans"`
+	Needed    int                `json:"needed"`
+	Pinned    int                `json:"pinned"`
+	AllDown   int                `json:"allDown"`
+	Cancelled bool               `json:"cancelled"`
+}
+
+func (f *FixService) Nodes() (*NodesView, error) {
+	if !f.st.nodesMu.TryLock() {
+		return nil, ErrBusy
+	}
+	defer f.st.nodesMu.Unlock()
+	hosts := append([]string{}, probe.CoreHosts...)
+	if r, ok := f.st.Results()["C20"]; ok {
+		if sum, ok := r.Data.(logscan.Summary); ok {
+			for _, h := range core.SortedKeys(sum.Hosts) {
+				if !probe.IsCoreHost(h) && len(hosts) < worker.MaxRouteHosts {
+					hosts = append(hosts, h)
+				}
+			}
+		}
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	defer cancel()
+	plans := worker.PlanRoutes(ctx, f.st.Env.Sys, hosts)
+	v := &NodesView{Plans: plans}
+	for _, p := range plans {
+		if p.Needed() {
+			v.Needed++
+		}
+		if p.Pinned != "" {
+			v.Pinned++
+		}
+		if p.Good == 0 {
+			v.AllDown++
+		}
+	}
+	v.Cancelled = ctx.Err() != nil
+	f.st.Prof.Bump(profile.CNodes)
+	return v, nil
 }
 
 func (f *FixService) CompleteGuide(id string) bool {

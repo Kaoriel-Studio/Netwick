@@ -29,6 +29,14 @@ export function Links(): $CancellablePromise<$models.Link[] | null> {
     return $Call.ByID(3232740978);
 }
 
+export function Quality(host: string): $CancellablePromise<$models.QualityView | null> {
+    return $Call.ByID(1218898002, host);
+}
+
+export function QualityHosts(): $CancellablePromise<string[] | null> {
+    return $Call.ByID(3129348189);
+}
+
 export function SensGames(): $CancellablePromise<$models.SensGame[] | null> {
     return $Call.ByID(2453187449);
 }

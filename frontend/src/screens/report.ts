@@ -1,6 +1,6 @@
 import { h, icon } from "../dom";
 import { t, dateTime } from "../i18n";
-import { link, toast, backButton } from "../app";
+import { link, toast, backButton, screenHead } from "../app";
 import { ReportService } from "../api";
 import type { Report } from "../api";
 import { resultParams } from "./check";
@@ -41,8 +41,7 @@ export async function reportScreen(): Promise<HTMLElement> {
   const pre = h("pre", { class: "report-preview", tabindex: 0, aria: { label: t("report.preview") }, text });
   return h("section", { class: "screen report" },
     backButton(),
-    h("h1", { class: "screen-title", text: t("report.title") }),
-    h("p", { class: "muted", text: t("report.subtitle") }),
+    ...screenHead(t("report.kicker"), t("report.title"), t("report.subtitle")),
     pre,
     h("div", { class: "actions row wrap" },
       h("button", { class: "btn btn-primary", type: "button", on: { click: async () => {

@@ -42,9 +42,13 @@ func (c *ServersCheck) RunWith(ctx context.Context, sys platform.System, deps ma
 		}
 	}
 	logHosts := map[string]int{}
+	latestHosts := map[string]int{}
 	if r, ok := deps["C20"]; ok {
 		if s, ok := r.Data.(logscan.Summary); ok {
 			logHosts = s.Hosts
+			if s.Latest != nil {
+				latestHosts = s.Latest
+			}
 		}
 	}
 	hosts := append([]string{}, probe.CoreHosts...)
@@ -66,8 +70,8 @@ func (c *ServersCheck) RunWith(ctx context.Context, sys platform.System, deps ma
 	hosts = append(hosts, extra...)
 
 	reports := probe.ProbeHosts(ctx, sys.Network(), hosts, pinned, 8, c.OnProgress)
-	r := verdict.Servers(c.id, c.group, reports, logHosts)
-	r.Data = ServersData{Reports: reports, Summary: verdict.Summarize(reports, logHosts)}
+	r := verdict.Servers(c.id, c.group, reports, latestHosts)
+	r.Data = ServersData{Reports: reports, Summary: verdict.Summarize(reports, latestHosts)}
 	return r
 }
 
@@ -288,17 +292,38 @@ func (c *HostsCheck) Run(ctx context.Context, sys platform.System) core.Result {
 		return r
 	}
 	p := hostsfile.Parse(b)
+	var legacy, managed []hostsfile.Entry
+	for _, e := range p.RiotEntries {
+		if e.Section == hostsfile.ManagedMarker {
+			managed = append(managed, e)
+		} else {
+			legacy = append(legacy, e)
+		}
+	}
+	var sections []string
+	for _, sct := range p.Sections {
+		if sct != hostsfile.ManagedMarker {
+			sections = append(sections, sct)
+		}
+	}
 	var r core.Result
-	if p.HasLegacy() {
+	switch {
+	case len(legacy) > 0 || len(sections) > 0:
 		r = c.result(core.StatusInfo, "hosts.legacy")
-		r.Params["count"] = strconv.Itoa(len(p.RiotEntries))
-		r.Params["sections"] = strings.Join(p.Sections, ", ")
+		r.Params["count"] = strconv.Itoa(len(legacy))
+		r.Params["sections"] = strings.Join(sections, ", ")
 		r.FixIDs = []string{"F10"}
-		for _, e := range p.RiotEntries {
+		for _, e := range legacy {
 			r.AddDetail(core.StatusInfo, "hosts.entry", map[string]string{"ip": e.IP, "host": e.Host})
 		}
-	} else {
+	case len(managed) > 0:
+		r = c.result(core.StatusOK, "hosts.managed")
+		r.Params["count"] = strconv.Itoa(len(managed))
+	default:
 		r = c.result(core.StatusOK, "hosts.clean")
+	}
+	for _, e := range managed {
+		r.AddDetail(core.StatusOK, "hosts.route", map[string]string{"ip": e.IP, "host": e.Host})
 	}
 	r.Data = p
 	return r
@@ -347,6 +372,17 @@ func (c *LogsCheck) RunWith(ctx context.Context, sys platform.System, deps map[s
 		files = files[:6]
 	}
 	sum := logscan.NewSummary()
+	latest := logscan.NewSummary()
+	latestPath := ""
+	for _, f := range files {
+		if strings.Contains(strings.ToLower(f.Path), "riot client logs") {
+			latestPath = f.Path
+			break
+		}
+	}
+	if latestPath == "" && len(files) > 0 {
+		latestPath = files[0].Path
+	}
 	for _, f := range files {
 		if ctx.Err() != nil {
 			break
@@ -357,9 +393,12 @@ func (c *LogsCheck) RunWith(ctx context.Context, sys platform.System, deps map[s
 		}
 		sum.Files++
 		sum.Scan(b)
+		if f.Path == latestPath {
+			latest.Scan(b)
+		}
 	}
 	var coreErr, extraErr []string
-	for _, h := range core.SortedKeys(sum.Hosts) {
+	for _, h := range core.SortedKeys(latest.Hosts) {
 		if probe.IsCoreHost(h) {
 			coreErr = append(coreErr, h)
 		} else {
@@ -373,16 +412,19 @@ func (c *LogsCheck) RunWith(ctx context.Context, sys platform.System, deps map[s
 	case len(coreErr) > 0:
 		r = c.result(core.StatusWarn, "logs.core_errors")
 		r.Params["hosts"] = strings.Join(coreErr, ", ")
-		r.FixIDs = []string{"F01"}
+		r.Steps = []core.Step{core.Fix("F01"), core.Fix("F11"), core.Fix("F02"), core.Fix("F14")}
 	case len(extraErr) > 0:
 		r = c.result(core.StatusInfo, "logs.extra_errors")
 		r.Params["hosts"] = strings.Join(extraErr, ", ")
+	case len(sum.Hosts) > 0:
+		r = c.result(core.StatusOK, "logs.recovered")
 	default:
 		r = c.result(core.StatusOK, "logs.clean")
 	}
 	for _, h := range core.SortedKeys(sum.Hosts) {
 		r.AddDetail(core.StatusInfo, "logs.host", map[string]string{"host": h, "count": strconv.Itoa(sum.Hosts[h])})
 	}
+	sum.Latest = latest.Hosts
 	r.Params["files"] = strconv.Itoa(sum.Files)
 	r.Params["incidents"] = strconv.Itoa(sum.Incidents)
 	r.Data = sum

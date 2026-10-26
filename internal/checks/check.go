@@ -195,10 +195,15 @@ func All() []Check {
 		&HostsCheck{base{"C19", core.GroupNetwork}},
 		&LogsCheck{base{"C20", core.GroupRiot}},
 		&DiskCheck{base{"C21", core.GroupInstall}},
+		&RiotStatusCheck{base{"C22", core.GroupRiot}},
+		&BonjourCheck{base{"C23", core.GroupNetwork}},
+		&PowerCheck{base{"C24", core.GroupWindows}},
 	}
 }
 
-var QuickIDs = []string{"C03", "C09", "C10", "C11", "C13", "C18"}
+const LastID = "C24"
+
+var QuickIDs = []string{"C03", "C09", "C10", "C11", "C13", "C18", "C22"}
 
 func Quick() []Check {
 	return WithDeps(QuickIDs)

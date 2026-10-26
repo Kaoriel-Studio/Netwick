@@ -61,3 +61,18 @@ func TestReportHasNoPersonalData(t *testing.T) {
 		t.Error("riot IP should stay")
 	}
 }
+
+func TestSanitizerUserNameInsideReplacement(t *testing.T) {
+	s := Sanitizer{UserName: "user", Computer: "PC-user"}
+	done := make(chan string, 1)
+	go func() { done <- s.String("owner user and user, host PC-user; superuser keeps") }()
+	select {
+	case got := <-done:
+		want := "owner <user> and <user>, host <pc>; superuser keeps"
+		if got != want {
+			t.Fatalf("got %q, want %q", got, want)
+		}
+	case <-time.After(2 * time.Second):
+		t.Fatal("sanitizer hangs")
+	}
+}
