@@ -27,10 +27,11 @@ type Summary struct {
 	Incidents int            `json:"incidents"`
 	Hosts     map[string]int `json:"hosts"`
 	Types     map[string]int `json:"types"`
+	Latest    map[string]int `json:"latest"`
 }
 
 func NewSummary() Summary {
-	return Summary{Hosts: map[string]int{}, Types: map[string]int{}}
+	return Summary{Hosts: map[string]int{}, Types: map[string]int{}, Latest: map[string]int{}}
 }
 
 func (s *Summary) Scan(data []byte) {

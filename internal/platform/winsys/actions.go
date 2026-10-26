@@ -4,7 +4,6 @@ package winsys
 
 import (
 	"context"
-	"encoding/binary"
 	"errors"
 	"os"
 	"os/exec"
@@ -25,8 +24,6 @@ var (
 	procSetDNSSettings  = modIphlpapi.NewProc("SetInterfaceDnsSettings")
 	procFreeDNSSettings = modIphlpapi.NewProc("FreeInterfaceDnsSettings")
 	procLuidToGuid      = modIphlpapi.NewProc("ConvertInterfaceLuidToGuid")
-	modSrclient         = windows.NewLazySystemDLL("srclient.dll")
-	procSRSetRestorePnt = modSrclient.NewProc("SRSetRestorePointW")
 )
 
 type Actions struct {
@@ -99,7 +96,72 @@ func (a *Actions) ResetNetworkStack(ctx context.Context) error {
 	if err := runSystemTool(ctx, "netsh.exe", "int", "ip", "reset"); err != nil {
 		return err
 	}
-	return runSystemTool(ctx, "netsh.exe", "winsock", "reset")
+	if err := runSystemTool(ctx, "netsh.exe", "winsock", "reset"); err != nil {
+		return err
+	}
+	return runSystemTool(ctx, "netsh.exe", "winhttp", "reset", "proxy")
+}
+
+func localAppData() string {
+	p, err := windows.KnownFolderPath(windows.FOLDERID_LocalAppData, 0)
+	if err != nil {
+		return ""
+	}
+	return p
+}
+
+func underLocalAppData(path string) bool {
+	root := localAppData()
+	if root == "" || !filepath.IsAbs(path) {
+		return false
+	}
+	rel, err := filepath.Rel(root, filepath.Clean(path))
+	if err != nil || rel == "." || strings.HasPrefix(rel, "..") {
+		return false
+	}
+	return strings.HasPrefix(strings.ToLower(rel), "riot games"+string(filepath.Separator)) || strings.HasPrefix(strings.ToLower(rel), "valorant"+string(filepath.Separator))
+}
+
+func (a *Actions) RemoveTree(path string) error {
+	if !underLocalAppData(path) {
+		return platform.ErrDenied
+	}
+	fi, err := os.Lstat(path)
+	if errors.Is(err, os.ErrNotExist) {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	if fi.Mode()&os.ModeSymlink != 0 || fi.Mode()&os.ModeIrregular != 0 || !fi.IsDir() {
+		return platform.ErrDenied
+	}
+	return os.RemoveAll(path)
+}
+
+func (a *Actions) RemoveFile(path string) error {
+	if !underLocalAppData(path) {
+		return platform.ErrDenied
+	}
+	fi, err := os.Lstat(path)
+	if errors.Is(err, os.ErrNotExist) {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	if !fi.Mode().IsRegular() {
+		return platform.ErrDenied
+	}
+	return os.Remove(path)
+}
+
+func (a *Actions) ScheduleReboot(ctx context.Context) error {
+	return runSystemTool(ctx, "shutdown.exe", "/r", "/t", "60", "/c", "Netwick: restart to apply network settings. Cancel: shutdown /a")
+}
+
+func (a *Actions) CancelReboot(ctx context.Context) error {
+	return runSystemTool(ctx, "shutdown.exe", "/a")
 }
 
 type dnsInterfaceSettings struct {
@@ -335,74 +397,6 @@ func (a *Actions) WriteHosts(content []byte) error {
 	if err := windows.MoveFileEx(from, to, windows.MOVEFILE_REPLACE_EXISTING|windows.MOVEFILE_WRITE_THROUGH); err != nil {
 		os.Remove(tmp)
 		return err
-	}
-	return nil
-}
-
-const (
-	beginSystemChange = 100
-	endSystemChange   = 101
-	modifySettings    = 12
-)
-
-func srCall(event, kind uint32, seq int64, desc string) (bool, uint32, int64) {
-	var info [528]byte
-	binary.LittleEndian.PutUint32(info[0:], event)
-	binary.LittleEndian.PutUint32(info[4:], kind)
-	binary.LittleEndian.PutUint64(info[8:], uint64(seq))
-	u, _ := windows.UTF16FromString(desc)
-	if len(u) > 255 {
-		u = append(u[:255], 0)
-	}
-	for i, c := range u {
-		binary.LittleEndian.PutUint16(info[16+2*i:], c)
-	}
-	var status [12]byte
-	r, _, _ := procSRSetRestorePnt.Call(uintptr(unsafe.Pointer(&info[0])), uintptr(unsafe.Pointer(&status[0])))
-	return r != 0, binary.LittleEndian.Uint32(status[0:]), int64(binary.LittleEndian.Uint64(status[4:]))
-}
-
-func latestRestorePoint() int64 {
-	rows, err := wmiQuery(`root\default`, "SELECT SequenceNumber FROM SystemRestore", []string{"SequenceNumber"})
-	if err != nil {
-		return -1
-	}
-	var maxSeq int64 = 0
-	for _, r := range rows {
-		if n, ok := asInt(r["SequenceNumber"]); ok && n > maxSeq {
-			maxSeq = n
-		}
-	}
-	return maxSeq
-}
-
-func (a *Actions) CreateRestorePoint(description string) error {
-	if err := procSRSetRestorePnt.Find(); err != nil {
-		return platform.ErrUnavailable
-	}
-	before := latestRestorePoint()
-	var result error
-	err := withCOM(func() error {
-		ok, status, seq := srCall(beginSystemChange, modifySettings, 0, description)
-		if !ok {
-			if status == uint32(windows.ERROR_SERVICE_DISABLED) {
-				result = platform.ErrUnavailable
-			} else {
-				result = syscall.Errno(status)
-			}
-			return nil
-		}
-		srCall(endSystemChange, modifySettings, seq, description)
-		return nil
-	})
-	if err != nil {
-		return err
-	}
-	if result != nil {
-		return result
-	}
-	if after := latestRestorePoint(); before >= 0 && after >= 0 && after <= before {
-		return platform.ErrUnavailable
 	}
 	return nil
 }

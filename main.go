@@ -65,18 +65,24 @@ func runUI(env *app.Env, scenarios []string) error {
 	fixSvc := services.NewFixService(st)
 	reportSvc := services.NewReportService(st)
 	toolsSvc := services.NewToolsService(st)
+	profileSvc := services.NewProfileService(st)
 
+	svcList := []application.Service{
+		application.NewService(appSvc),
+		application.NewService(checkSvc),
+		application.NewService(fixSvc),
+		application.NewService(&services.KBService{}),
+		application.NewService(reportSvc),
+		application.NewService(toolsSvc),
+		application.NewService(profileSvc),
+	}
+	if env.Demo {
+		svcList = append(svcList, application.NewService(services.NewDemoService(st, scenarios)))
+	}
 	wapp := application.New(application.Options{
 		Name:        app.Name,
 		Description: "Checks why the game client does not start or connect and fixes it with official steps",
-		Services: []application.Service{
-			application.NewService(appSvc),
-			application.NewService(checkSvc),
-			application.NewService(fixSvc),
-			application.NewService(&services.KBService{}),
-			application.NewService(reportSvc),
-			application.NewService(toolsSvc),
-		},
+		Services:    svcList,
 		Assets: application.AssetOptions{
 			Handler: application.AssetFileServerFS(assets),
 		},
@@ -100,7 +106,7 @@ func runUI(env *app.Env, scenarios []string) error {
 		Height:           680,
 		MinWidth:         760,
 		MinHeight:        560,
-		BackgroundColour: application.NewRGB(246, 247, 249),
+		BackgroundColour: application.NewRGB(15, 22, 30),
 		URL:              "/",
 	})
 	reportSvc.SaveFile = func(name string) (string, error) {

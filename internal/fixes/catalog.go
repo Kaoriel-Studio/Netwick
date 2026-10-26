@@ -20,25 +20,31 @@ type Fix struct {
 	RequiresAdmin  bool   `json:"requiresAdmin"`
 	RequiresReboot bool   `json:"requiresReboot"`
 	Reversible     bool   `json:"reversible"`
+	NoUndoNeeded   bool   `json:"noUndoNeeded"`
+	Local          bool   `json:"local"`
 	Risk           Risk   `json:"risk"`
-	RestorePoint   bool   `json:"restorePoint"`
 	Scenario       string `json:"scenario"`
 }
 
 var Catalog = map[string]Fix{
-	"F01": {ID: "F01", SourceURL: core.SrcVALErrorCodes, Risk: RiskLow},
-	"F02": {ID: "F02", SourceURL: core.SrcDNS, RequiresAdmin: true, Risk: RiskLow},
-	"F03": {ID: "F03", SourceURL: core.SrcDNS, RequiresAdmin: true, Risk: RiskLow},
-	"F04": {ID: "F04", SourceURL: core.SrcDNS, RequiresAdmin: true, Reversible: true, Risk: RiskMedium, RestorePoint: true},
-	"F05": {ID: "F05", SourceURL: core.SrcConnection, RequiresAdmin: true, RequiresReboot: true, Risk: RiskHigh, RestorePoint: true},
+	"F01": {ID: "F01", SourceURL: core.SrcVALErrorCodes, Risk: RiskLow, Local: true, NoUndoNeeded: true},
+	"F02": {ID: "F02", SourceURL: core.SrcDNS, RequiresAdmin: true, Risk: RiskLow, NoUndoNeeded: true},
+	"F03": {ID: "F03", SourceURL: core.SrcDNS, RequiresAdmin: true, Risk: RiskLow, NoUndoNeeded: true},
+	"F04": {ID: "F04", SourceURL: core.SrcDNS, RequiresAdmin: true, Reversible: true, Risk: RiskMedium},
+	"F05": {ID: "F05", SourceURL: core.SrcConnection, RequiresAdmin: true, RequiresReboot: true, Risk: RiskHigh},
 	"F06": {ID: "F06", SourceURL: core.SrcFirewall, RequiresAdmin: true, Reversible: true, Risk: RiskLow},
-	"F07": {ID: "F07", SourceURL: core.SrcVAN57, RequiresAdmin: true, RequiresReboot: true, Reversible: true, Risk: RiskMedium, RestorePoint: true},
-	"F08": {ID: "F08", SourceURL: core.SrcVAN128, RequiresAdmin: true, RequiresReboot: true, Reversible: true, Risk: RiskMedium, RestorePoint: true, Scenario: "VAN 128"},
-	"F09": {ID: "F09", SourceURL: core.SrcKiller, RequiresAdmin: true, Reversible: true, Risk: RiskMedium, RestorePoint: true, Scenario: "VAN 68"},
+	"F07": {ID: "F07", SourceURL: core.SrcVAN57, RequiresAdmin: true, RequiresReboot: true, Reversible: true, Risk: RiskMedium},
+	"F08": {ID: "F08", SourceURL: core.SrcVAN128, RequiresAdmin: true, RequiresReboot: true, Reversible: true, Risk: RiskMedium, Scenario: "VAN 128"},
+	"F09": {ID: "F09", SourceURL: core.SrcKiller, RequiresAdmin: true, Reversible: true, Risk: RiskMedium, Scenario: "VAN 68"},
 	"F10": {ID: "F10", SourceURL: "", RequiresAdmin: true, Reversible: true, Risk: RiskLow},
+	"F11": {ID: "F11", SourceURL: "", Risk: RiskLow, Local: true, NoUndoNeeded: true},
+	"F12": {ID: "F12", SourceURL: "", Risk: RiskMedium, Local: true},
+	"F13": {ID: "F13", SourceURL: "", RequiresAdmin: true, Risk: RiskLow, NoUndoNeeded: true},
+	"F14": {ID: "F14", SourceURL: "", RequiresAdmin: true, Reversible: true, Risk: RiskMedium},
+	"F15": {ID: "F15", SourceURL: "", RequiresAdmin: true, Reversible: true, Risk: RiskLow},
 }
 
-var PrivilegedIDs = []string{"F02", "F03", "F04", "F05", "F06", "F07", "F08", "F09", "F10"}
+var PrivilegedIDs = []string{"F02", "F03", "F04", "F05", "F06", "F07", "F08", "F09", "F10", "F13", "F14", "F15"}
 
 func Get(id string) (Fix, bool) {
 	f, ok := Catalog[id]
@@ -70,9 +76,11 @@ const (
 	OpenDateTime          Opener = "datetime"
 	OpenSystemInfo        Opener = "msinfo"
 	OpenDeviceManager     Opener = "devmgmt"
+	OpenPower             Opener = "power"
+	OpenGameMode          Opener = "gamemode"
 )
 
-var Openers = []Opener{OpenWindowsUpdate, OpenMsconfig, OpenTaskManager, OpenAppsFeatures, OpenCoreIsolation, OpenExploitProtection, OpenFirewallAdvanced, OpenProxySettings, OpenVPNSettings, OpenNetworkStatus, OpenDateTime, OpenSystemInfo, OpenDeviceManager}
+var Openers = []Opener{OpenWindowsUpdate, OpenMsconfig, OpenTaskManager, OpenAppsFeatures, OpenCoreIsolation, OpenExploitProtection, OpenFirewallAdvanced, OpenProxySettings, OpenVPNSettings, OpenNetworkStatus, OpenDateTime, OpenSystemInfo, OpenDeviceManager, OpenPower, OpenGameMode}
 
 func ValidOpener(o string) bool {
 	for _, x := range Openers {
@@ -106,6 +114,7 @@ var Guides = map[string]Guide{
 	"G12": {ID: "G12", SourceURL: core.SrcVAN152, Steps: 2},
 	"G13": {ID: "G13", SourceURL: core.SrcRepairTool, Steps: 3},
 	"G14": {ID: "G14", SourceURL: core.SrcFirewall, Opens: []Opener{OpenFirewallAdvanced}, Steps: 4},
+	"G15": {ID: "G15", SourceURL: "", Opens: []Opener{OpenPower, OpenGameMode}, Steps: 3},
 }
 
 func GetGuide(id string) (Guide, bool) {
@@ -141,7 +150,7 @@ func StepExists(s core.Step) bool {
 	case core.StepArticle:
 		return s.ID == "official"
 	case core.StepCheck:
-		return len(s.ID) == 3 && s.ID[0] == 'C' && s.ID >= "C01" && s.ID <= "C21"
+		return len(s.ID) == 3 && s.ID[0] == 'C' && s.ID >= "C01" && s.ID <= "C24"
 	}
 	return false
 }

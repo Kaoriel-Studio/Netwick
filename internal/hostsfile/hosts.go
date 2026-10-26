@@ -3,10 +3,13 @@ package hostsfile
 import (
 	"net"
 	"regexp"
+	"sort"
 	"strings"
 
 	"github.com/kaoriel-studio/netwick/internal/probe"
 )
+
+const ManagedMarker = "NETWICK"
 
 var Markers = []string{"NETWICK", "CYPHERLINK-CDN", "CYPHERLINK-ROUTE", "RIOT-TLS-FIX"}
 
@@ -153,4 +156,87 @@ func anyRiot(hosts []string) bool {
 		}
 	}
 	return false
+}
+
+func isManagedMarker(line string) (bool, bool) {
+	name, ok, isClose := markerOf(line)
+	return ok && name == ManagedMarker, isClose
+}
+
+func ApplyRoutes(content []byte, routes map[string]string, date string) ([]byte, []string) {
+	lines, eol := splitLines(content)
+	var kept, removed []string
+	inManaged := false
+	for _, line := range lines {
+		if m, isClose := isManagedMarker(line); m {
+			removed = append(removed, line)
+			inManaged = !isClose
+			continue
+		}
+		if inManaged {
+			removed = append(removed, line)
+			continue
+		}
+		if !strings.HasPrefix(strings.TrimSpace(line), "#") {
+			if _, hosts, ok := parseMapping(line); ok && anyIn(hosts, routes) {
+				removed = append(removed, line)
+				continue
+			}
+		}
+		kept = append(kept, line)
+	}
+	for len(kept) > 0 && strings.TrimSpace(kept[len(kept)-1]) == "" {
+		kept = kept[:len(kept)-1]
+	}
+	if len(routes) > 0 {
+		kept = append(kept, "", "# >>> NETWICK >>> (managed routes, added "+date+" — safe to delete)")
+		for _, h := range sortedHosts(routes) {
+			kept = append(kept, padRight(routes[h], 18)+" "+h)
+		}
+		kept = append(kept, "# <<< NETWICK <<<")
+	}
+	kept = append(kept, "")
+	return []byte(strings.Join(kept, eol)), removed
+}
+
+func RemoveManaged(content []byte) []byte {
+	lines, eol := splitLines(content)
+	var kept []string
+	inManaged := false
+	for _, line := range lines {
+		if m, isClose := isManagedMarker(line); m {
+			inManaged = !isClose
+			continue
+		}
+		if inManaged {
+			continue
+		}
+		kept = append(kept, line)
+	}
+	return []byte(strings.Join(kept, eol))
+}
+
+func anyIn(hosts []string, routes map[string]string) bool {
+	for _, h := range hosts {
+		if _, ok := routes[strings.ToLower(h)]; ok {
+			return true
+		}
+	}
+	return false
+}
+
+func sortedHosts(m map[string]string) []string {
+	out := make([]string, 0, len(m))
+	for k := range m {
+		out = append(out, k)
+	}
+	sort.Strings(out)
+	return out
+}
+
+func padRight(s string, n int) string {
+	for len(s) < n {
+		s += " "
+	}
+	return s
 }

@@ -3,7 +3,8 @@
 **English** · [Русский](README.ru.md)
 
 A free, open-source Windows app that finds out why the Riot Client or the game won't launch, update or connect —
-and fixes it using only steps from official Riot and Microsoft articles.
+and fixes it step by step: with steps from official Riot and Microsoft articles and with common safe repairs
+(the app marks every step that is not in Riot articles).
 
 > Netwick isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone
 > officially involved in producing or managing Riot Games properties. Riot Games and all associated
@@ -18,6 +19,14 @@ Press **Check computer** and in about 10 seconds Netwick:
 - explains the cause in plain words and suggests a fix;
 - applies the fix **only with your permission**, and every change can be undone with one button;
 - starts the Riot Client the same way its own shortcut does.
+
+**My progress** keeps a local history of your checks: a health score, a trend line since the last time and medals.
+**Tools** has a connection-quality test (delay, jitter, loss to Riot servers), a check of power plan and Game Mode,
+a crosshair notebook and a sensitivity calculator. All of it stays on your computer.
+
+The **Repair** section has every scenario on its own: auto-repair, quick repair (client cache, DNS, Vanguard service),
+full network reset for VAL 43, a per-address test of Riot servers with optional pinning of working addresses in `hosts`,
+Bonjour, Vanguard reinstall, removing routes and undo. Before a scenario starts you see its steps and can untick any of them.
 
 ## What it never does
 
@@ -57,8 +66,9 @@ vendor and open an issue here with the detection name.
 
 Nothing about you or your computer leaves it. Details:
 
-- [docs/PRIVACY.md](docs/PRIVACY.md) — what data Netwick touches
-- [docs/SECURITY.md](docs/SECURITY.md) — threat model and safety checklist
+- [docs/PRIVACY.md](docs/PRIVACY.md) — what data Netwick touches and where it stays
+- [docs/FAQ.md](docs/FAQ.md) — what each repair does, common questions
+- [dev/SECURITY.md](dev/SECURITY.md) — threat model and safety checklist
 - [SECURITY.md](SECURITY.md) — how to report a vulnerability
 
 ## For developers
@@ -79,11 +89,14 @@ computer changes. Build the frontend once (Go embeds `frontend/dist`), then star
 
 ```bash
 (cd frontend && npm run build)
-go run . --demo=all-ok          # or set NETWICK_DEMO=<scenario>
+go run .                        # starts with "all-ok"; or --demo=val-43, or NETWICK_DEMO=<scenario>
 ```
 
-Scenarios: `all-ok`, `owner-real-run`, `no-internet`, `isp-cuts-some-ips`, `tpm-off-win11`, `secure-boot-off`,
-`vgc-disabled`, `firewall-blocks`, `vpn-on`, `van-68`, `van-128`, `old-hosts-entries`.
+The strip under the top bar switches the simulated situation at any time and has a **Restart PC** button that
+simulates a reboot. Fixes really change the simulated computer, so you can go through every scenario like a Windows user.
+
+Scenarios: `all-ok`, `val-43`, `owner-real-run`, `no-internet`, `isp-cuts-some-ips`, `riot-incident`, `tpm-off-win11`,
+`secure-boot-off`, `vgc-disabled`, `firewall-blocks`, `vpn-on`, `van-68`, `van-128`, `old-hosts-entries`.
 
 Demo mode is not available in the Windows release build.
 
@@ -103,8 +116,8 @@ regenerated bindings together with the Go changes that caused them.
 
 ### More
 
-- [docs/DECISIONS.md](docs/DECISIONS.md) — design decisions
-- [docs/TESTING-WINDOWS.md](docs/TESTING-WINDOWS.md) — manual test checklist for a real Windows PC
+- [dev/DECISIONS.md](dev/DECISIONS.md) — design decisions
+- [dev/TESTING-WINDOWS.md](dev/TESTING-WINDOWS.md) — manual test checklist for a real Windows PC
 
 ## License
 

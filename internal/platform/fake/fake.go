@@ -2,6 +2,8 @@ package fake
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"os"
 	"path"
 	"path/filepath"
@@ -12,6 +14,7 @@ import (
 
 	"github.com/kaoriel-studio/netwick/internal/platform"
 	"github.com/kaoriel-studio/netwick/internal/probe"
+	"github.com/kaoriel-studio/netwick/internal/riotstatus"
 )
 
 type file struct {
@@ -50,9 +53,13 @@ type System struct {
 	pools       map[string][]string
 	ips         map[string]ipState
 	crashDump   platform.RegDWORD
-	rpDisabled  bool
 	dhcp        map[uint64]bool
 	backupDir   string
+	status      map[string]string
+	power       platform.PowerInfo
+	pingSeq     int
+	netReset    bool
+	sessions    int
 	ActionDelay time.Duration
 	ProbeDelay  time.Duration
 }
@@ -249,6 +256,12 @@ func (s *System) PendingReboot() (platform.PendingReboot, error) {
 	return s.pending, nil
 }
 
+func (s *System) Power() (platform.PowerInfo, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.power, nil
+}
+
 func (s *System) DiskFree(p string) (uint64, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -324,6 +337,71 @@ func (n *fakeNet) Probe(ctx context.Context, ip, host string) probe.Result {
 	return r
 }
 
+func (n *fakeNet) TCPPing(ctx context.Context, ip string) (time.Duration, error) {
+	s := n.sys()
+	if s.ProbeDelay > 0 {
+		select {
+		case <-time.After(s.ProbeDelay / 4):
+		case <-ctx.Done():
+			return 0, ctx.Err()
+		}
+	}
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.pingSeq++
+	st, ok := s.ips[ip]
+	if !s.dnsOK || !ok || st.status == probe.StatusNoTCP || st.status == probe.StatusNoTLS && s.pingSeq%2 == 0 {
+		return 0, context.DeadlineExceeded
+	}
+	base := st.latency
+	if base == 0 {
+		base = 40
+	}
+	jitter := (s.pingSeq * 37) % 13
+	if st.status == probe.StatusStalled {
+		base += 120
+		jitter *= 4
+		if s.pingSeq%5 == 0 {
+			return 0, context.DeadlineExceeded
+		}
+	}
+	if s.scenario == WifiNoise {
+		base += 25
+		jitter *= 5
+		if s.pingSeq%9 == 0 {
+			return 0, context.DeadlineExceeded
+		}
+	}
+	return time.Duration(base+jitter) * time.Millisecond, nil
+}
+
+func (n *fakeNet) FetchStatus(ctx context.Context, url string) ([]byte, error) {
+	s := n.sys()
+	if s.ProbeDelay > 0 {
+		select {
+		case <-time.After(s.ProbeDelay):
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		}
+	}
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if !s.dnsOK {
+		return nil, context.DeadlineExceeded
+	}
+	for _, p := range riotstatus.Products {
+		for _, r := range riotstatus.Regions {
+			if riotstatus.URL(p, r) == url {
+				if b, ok := s.status[p.ID]; ok {
+					return []byte(b), nil
+				}
+				return nil, platform.ErrNotFound
+			}
+		}
+	}
+	return nil, probe.ErrStatusURL
+}
+
 func (s *System) TerminateProcesses(names []string) (int, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -348,8 +426,56 @@ func (s *System) StartProcess(p string, args []string) error {
 	s.delay()
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	s.procs = append(s.procs, platform.Process{PID: 4242, Name: filepath.Base(strings.ReplaceAll(p, `\`, "/"))})
+	name := filepath.Base(strings.ReplaceAll(p, `\`, "/"))
+	s.procs = append(s.procs, platform.Process{PID: 4242, Name: name})
+	if strings.EqualFold(name, "RiotClientServices.exe") {
+		s.newSessionLocked()
+	}
 	return nil
+}
+
+func (s *System) pinnedLocked() map[string]string {
+	pins := map[string]string{}
+	f, ok := s.files[key(hostsPath)]
+	if !ok {
+		return pins
+	}
+	for _, line := range strings.Split(strings.ReplaceAll(string(f.data), "\r\n", "\n"), "\n") {
+		fl := strings.Fields(line)
+		if len(fl) >= 2 && !strings.HasPrefix(fl[0], "#") {
+			for _, h := range fl[1:] {
+				pins[strings.ToLower(h)] = fl[0]
+			}
+		}
+	}
+	return pins
+}
+
+func (s *System) clientIPLocked(host string) (string, bool) {
+	if ip, ok := s.pinnedLocked()[host]; ok {
+		return ip, true
+	}
+	if !s.dnsOK || len(s.pools[host]) == 0 {
+		return "", false
+	}
+	return s.pools[host][0], true
+}
+
+func (s *System) newSessionLocked() {
+	s.sessions++
+	now := time.Now()
+	var b strings.Builder
+	b.WriteString(logLines("", 0, now))
+	for _, h := range sortedKeys(s.pools) {
+		ip, ok := s.clientIPLocked(h)
+		st, known := s.ips[ip]
+		if ok && known && st.status == probe.StatusOk {
+			continue
+		}
+		b.WriteString(strings.TrimPrefix(logLines(h, 5, now), logLines("", 0, now)))
+	}
+	name := fmt.Sprintf(`%s\%s_%04d_Riot Client.log`, logDir, now.Format("2006-01-02T15-04-05"), 9000+s.sessions)
+	s.files[key(name)] = file{data: []byte(b.String()), modTime: now.Add(time.Duration(s.sessions) * time.Millisecond)}
 }
 
 func (s *System) delay() {
@@ -401,6 +527,7 @@ func (s *System) ResetNetworkStack(ctx context.Context) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.pending.CBS = true
+	s.netReset = true
 	return nil
 }
 
@@ -501,17 +628,98 @@ func (s *System) WriteHosts(content []byte) error {
 	return nil
 }
 
-func (s *System) CreateRestorePoint(description string) error {
-	s.delay()
-	if s.rpDisabled {
-		return platform.ErrUnavailable
+func (s *System) BackupDir() string { return s.backupDir }
+
+var errOutside = errors.New("outside of the Riot folders")
+
+func (s *System) allowedLocal(p string) bool {
+	k := key(p)
+	la := key(s.env["LOCALAPPDATA"]) + `\`
+	return strings.HasPrefix(k, la+`riot games\`) || strings.HasPrefix(k, la+`valorant\`)
+}
+
+func (s *System) RemoveTree(p string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if !s.allowedLocal(p) {
+		return errOutside
+	}
+	prefix := key(p) + `\`
+	for k := range s.files {
+		if strings.HasPrefix(k, prefix) {
+			delete(s.files, k)
+		}
 	}
 	return nil
 }
 
-func (s *System) BackupDir() string { return s.backupDir }
+func (s *System) RemoveFile(p string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if !s.allowedLocal(p) {
+		return errOutside
+	}
+	delete(s.files, key(p))
+	return nil
+}
+
+func (s *System) ScheduleReboot(ctx context.Context) error {
+	s.delay()
+	s.SimulateReboot()
+	return nil
+}
+
+func (s *System) CancelReboot(ctx context.Context) error { return nil }
+
+func (s *System) SimulateReboot() {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.pending = platform.PendingReboot{}
+	if s.netReset {
+		s.netReset = false
+		s.dnsOK = true
+		s.healCut()
+	}
+	for k, sv := range s.services {
+		if !sv.Exists {
+			continue
+		}
+		switch sv.StartType {
+		case platform.StartAutomatic, platform.StartSystem, platform.StartBoot:
+			sv.State = platform.StateRunning
+		case platform.StartDisabled:
+			sv.State = platform.StateStopped
+		}
+		s.services[k] = sv
+	}
+	var kept []platform.Process
+	for _, p := range s.procs {
+		if !strings.HasPrefix(strings.ToLower(p.Name), "riotclient") && !strings.HasPrefix(strings.ToLower(p.Name), "valorant") {
+			kept = append(kept, p)
+		}
+	}
+	s.procs = kept
+}
+
+func (s *System) Reset(scenario string) {
+	n := New(scenario)
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.scenario, s.env, s.files, s.drives = n.scenario, n.env, n.files, n.drives
+	s.osv, s.tpm, s.secureBoot, s.dg = n.osv, n.tpm, n.secureBoot, n.dg
+	s.services, s.proxy, s.adapters, s.rules, s.fwEnabled = n.services, n.proxy, n.adapters, n.rules, n.fwEnabled
+	s.procs, s.drivers, s.hw, s.pending, s.diskFree = n.procs, n.drivers, n.hw, n.pending, n.diskFree
+	s.clock, s.dnsOK, s.pools, s.ips, s.crashDump = n.clock, n.dnsOK, n.pools, n.ips, n.crashDump
+	s.dhcp, s.backupDir, s.status = n.dhcp, n.backupDir, n.status
+	s.power = n.power
+	s.netReset, s.sessions = false, 0
+}
 
 func (s *System) SimulateGuide(id string) {
+	if id == "reboot" {
+		s.SimulateReboot()
+		return
+	}
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	switch id {
@@ -539,7 +747,7 @@ func (s *System) SimulateGuide(id string) {
 	case "G03":
 		s.tpm = platform.TPMInfo{Present: platform.Yes, Version: "2.0"}
 		s.secureBoot = platform.Yes
-	case "G06", "reboot":
+	case "G06":
 		s.pending = platform.PendingReboot{}
 	case "time_sync":
 		s.clock = 0

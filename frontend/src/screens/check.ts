@@ -1,22 +1,27 @@
 import { h, icon, statusBadge, mount } from "../dom";
 import { t, has } from "../i18n";
-import { state, go, replace, link, toast, refreshUndo } from "../app";
-import { CheckService, FixService, Events, CheckProgress } from "../api";
+import { state, go, replace, link, toast, refreshUndo, markNav } from "../app";
+import { CheckService, FixService, ProfileService, Events, CheckProgress } from "../api";
 import type { Result, RunSummary, ProgressEvent, Step } from "../api";
 import { wizardScreen } from "./wizard";
 import { searchScreen } from "./search";
 import { reportScreen } from "./report";
+import { supportScreen } from "./support";
+import { repairScreen, runScenario, tile } from "./repair";
+import { scenario, type RepairScenario } from "./scenarios";
+import { profileCard } from "./profile";
+import { dailyTip } from "./tip";
 
 export const GROUP_OF: Record<string, string> = {
   C01: "install", C21: "install",
   C02: "windows", C03: "windows", C04: "windows", C05: "windows", C06: "windows", C07: "windows", C15: "windows", C17: "windows", C18: "windows",
   C08: "vanguard", C09: "vanguard",
-  C11: "network", C12: "network", C13: "network", C14: "network", C16: "network", C19: "network",
-  C10: "riot", C20: "riot",
+  C11: "network", C12: "network", C13: "network", C14: "network", C16: "network", C19: "network", C23: "network",
+  C10: "riot", C20: "riot", C22: "riot",
 };
 
 const GROUP_ORDER = ["install", "windows", "vanguard", "network", "riot"];
-const QUICK = ["C01", "C03", "C09", "C10", "C11", "C13", "C18", "C19", "C20"];
+const QUICK = ["C01", "C03", "C09", "C10", "C11", "C13", "C18", "C19", "C20", "C22"];
 
 export function resultParams(r: { params?: Record<string, string | undefined> | null }): Record<string, string> {
   const p: Record<string, string> = {};
@@ -40,6 +45,12 @@ export function resultLine(r: Result, expanded = false): HTMLElement {
   return h("li", { class: "check check-" + status }, statusBadge(status, t("status." + status)), body);
 }
 
+function profileSlot(): HTMLElement {
+  const slot = h("div", { class: "profile-slot" });
+  void ProfileService.Get().then((v) => mount(slot, profileCard(v))).catch(() => undefined);
+  return slot;
+}
+
 export function homeScreen(): HTMLElement {
   const input = h("input", { class: "input", id: "code", type: "text", placeholder: "VAN 68", attrs: { maxlength: "64", autocomplete: "off", spellcheck: "false" }, aria: { describedby: "code-hint" } });
   const find = () => {
@@ -49,18 +60,32 @@ export function homeScreen(): HTMLElement {
   };
   input.addEventListener("keydown", (e) => { if (e.key === "Enter") find(); });
   const chip = (id: string) => h("button", { class: "chip", type: "button", on: { click: () => startCheck("full", id) } }, t("issue." + id));
+  const auto = scenario("auto");
+  const quick = ["quick", "network", "nodes"].map((id) => scenario(id)).filter((x): x is RepairScenario => !!x);
   return h("section", { class: "screen home" },
-    h("h1", { class: "hero-title", text: t("home.title") }),
-    h("p", { class: "hero-sub", text: t("home.subtitle") }),
-    h("button", { class: "btn btn-primary btn-hero", type: "button", on: { click: () => startCheck("full", "") } }, t("home.check")),
-    h("p", { class: "muted small center", text: t("home.check_hint") }),
-    h("div", { class: "card code-card" },
-      h("label", { class: "label", for: "code", text: t("home.code_label") }),
-      h("div", { class: "row" }, input, h("button", { class: "btn btn-secondary", type: "button", on: { click: find } }, icon("search"), t("home.find"))),
-      h("p", { class: "muted small", id: "code-hint", text: t("home.code_hint") })),
-    h("div", { class: "issues" },
-      h("h2", { class: "section-title", text: t("home.common") }),
-      h("div", { class: "chips" }, chip("wont_launch"), chip("wont_update"), chip("crashes"), chip("high_ping"))),
+    h("div", { class: "hero" },
+      h("p", { class: "kicker", text: t("home.kicker") }),
+      h("h1", { class: "hero-title" }, t("home.title_1"), " ", h("em", { text: t("home.title_2") })),
+      h("p", { class: "hero-sub", text: t("home.subtitle") }),
+      h("div", { class: "hero-actions" },
+        h("span", { class: "cta-frame" }, h("button", { class: "btn btn-primary", type: "button", on: { click: () => startCheck("full", "") } }, icon("radar"), t("home.check"))),
+        auto ? h("button", { class: "btn btn-secondary btn-large", type: "button", on: { click: () => runScenario(auto) } }, icon("bolt"), t("scenario.auto.title")) : null),
+      h("p", { class: "hero-hint", text: t("home.check_hint") })),
+    profileSlot(),
+    h("div", { class: "two-col" },
+      h("div", { class: "card code-card" },
+        h("h2", { class: "section-title" }, h("label", { for: "code", text: t("home.code_label") })),
+        h("div", { class: "row" }, input, h("button", { class: "btn btn-secondary", type: "button", on: { click: find } }, icon("search"), t("home.find"))),
+        h("p", { class: "muted small", id: "code-hint", text: t("home.code_hint") })),
+      h("div", { class: "card issues" },
+        h("h2", { class: "section-title", text: t("home.common") }),
+        h("div", { class: "chips" }, chip("wont_launch"), chip("wont_update"), chip("crashes"), chip("high_ping")))),
+    h("div", null,
+      h("div", { class: "row wrap" },
+        h("h2", { class: "section-title grow", text: t("home.repair") }),
+        h("button", { class: "btn btn-ghost btn-small", type: "button", on: { click: () => { markNav("repair"); void go(repairScreen); } } }, t("home.repair_all"), icon("chevron"))),
+      h("div", { class: "tiles" }, quick.map((sc, i) => tile(sc, i, true)))),
+    dailyTip(),
     h("p", { class: "disclaimer-short", text: t("disclaimer.short") }));
 }
 
@@ -118,6 +143,8 @@ function progressScreen(mode: "full" | "quick", focus: string): HTMLElement {
       if (mode === "full") state.last = sum;
       if (sum.cancelled) {
         toast(t("progress.cancelled"));
+      } else if (mode === "full") {
+        void announceMedals();
       }
       await replace(() => resultScreen(sum));
     } catch {
@@ -127,6 +154,18 @@ function progressScreen(mode: "full" | "quick", focus: string): HTMLElement {
     }
   })();
   return screen;
+}
+
+async function announceMedals(): Promise<void> {
+  try {
+    const v = await ProfileService.Get();
+    const fresh = (v.medals ?? []).filter((m) => m.fresh);
+    if (fresh.length === 0) return;
+    toast(t("medal.new", { name: fresh.map((m) => t(`medal.${m.id}.name`)).join(", ") }));
+    await ProfileService.Seen();
+  } catch {
+    return;
+  }
 }
 
 const LEVEL_ICON: Record<string, string> = { green: "ok", yellow: "warn", red: "fail", unknown: "unknown" };
@@ -155,10 +194,14 @@ export function resultScreen(sum: RunSummary): HTMLElement {
   }
   const all = sum.results ?? [];
   const detailsList = h("ul", { class: "check-list" }, all.slice().sort((a, b) => order(a) - order(b)).map((r) => resultLine(r)));
+  const riotSide = top?.checkId === "C22" && String(top.status) === "warn";
+  if (riotSide) {
+    primary = link(t("result.status_page"), "https://status.riotgames.com/", "btn btn-primary btn-large");
+  }
   const verdictCard = h("div", { class: "verdict verdict-" + level, role: "status" },
     h("div", { class: "verdict-light", aria: { hidden: "true" } }, icon(LEVEL_ICON[level] ?? "unknown", "verdict-icon")),
     h("div", { class: "verdict-text" },
-      h("h1", { class: "verdict-title", text: t("verdict.title." + level) }),
+      h("h1", { class: "verdict-title", text: riotSide ? t("verdict.title.riot") : t("verdict.title." + level) }),
       h("p", { class: "verdict-sentence", text: level === "green" ? t(v.messageKey) : sentence }),
       problems.length > 1 ? h("p", { class: "muted small", text: t("result.more_problems", { count: problems.length - 1 }) }) : null));
   const problemsBlock = problems.length > 1
@@ -179,8 +222,9 @@ export function resultScreen(sum: RunSummary): HTMLElement {
       h("p", { class: "muted", text: t("result.not_found_text") }),
       h("div", { class: "row wrap" },
         state.focus === "high_ping" || state.focus === "wont_update" ? h("button", { class: "btn btn-primary", type: "button", on: { click: () => void go(() => searchScreen("CONNECTION")) } }, t("result.network_guide")) : null,
+        h("button", { class: "btn btn-secondary", type: "button", on: { click: () => { const a = scenario("auto"); if (a) runScenario(a); } } }, icon("bolt"), t("scenario.auto.title")),
         h("button", { class: "btn btn-secondary", type: "button", on: { click: () => void go(() => searchScreen("")) } }, t("result.find_code")),
-        h("button", { class: "btn btn-secondary", type: "button", on: { click: () => void go(() => wizardScreen([{ kind: "guide", id: "G13" }], "", t("guide.G13.title"))) } }, t("result.contact"))))
+        h("button", { class: "btn btn-ghost", type: "button", on: { click: () => void go(supportScreen) } }, icon("support"), t("result.contact"))))
     : null;
   return h("section", { class: "screen result" },
     verdictCard,

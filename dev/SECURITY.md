@@ -28,7 +28,7 @@ to the Wails services or the worker.
 | S8 no shell | `internal/platform/winsys/actions.go` `runSystemTool` |
 | S9 DLL search order | `env_windows.go` `hardenProcess` |
 | S10 TLS validation | `internal/probe/probe.go`: chain verified against system roots; on failure the probe only classifies `CertError` and sends nothing beyond `GET /` |
-| S11 network destinations | Riot hosts from `internal/probe/network.go`, DNS 1.1.1.1/8.8.8.8/77.88.8.8, GitHub Releases API only if enabled |
+| S11 network destinations | Riot hosts from `internal/probe/network.go`, Riot status JSON (`internal/riotstatus`, exact URL allowlist), DNS 1.1.1.1/8.8.8.8/77.88.8.8, GitHub Releases API only if enabled |
 | S12 update check | `AppService.CheckUpdate` shows a link only |
 | S13 Riot logs | read-only, last 5 MB of 6 newest files, only whitelisted hostnames and error types are kept |
 | S14 sanitization | `internal/report` + tests |
@@ -60,6 +60,9 @@ Every method below validates its input in Go.
 - `FixService.LaunchGame`
 - `FixService.CompleteGuide`
 - `FixService.Open`
+- `FixService.Reboot`
+- `FixService.CancelReboot`
+- `FixService.Nodes`
 - `KBService.Search`
 - `KBService.Get`
 - `ReportService.Build`
@@ -72,3 +75,12 @@ Every method below validates its input in Go.
 - `ToolsService.SensGames`
 - `ToolsService.Sensitivity`
 - `ToolsService.Links`
+- `ToolsService.QualityHosts`
+- `ToolsService.Quality`
+- `ProfileService.Get`
+- `ProfileService.Seen`
+- `ProfileService.Reset`
+- `DemoService.Info`
+- `DemoService.SetScenario`
+
+`DemoService` is registered only in demo builds (`!windows || demo`); the Windows release binary does not expose it.

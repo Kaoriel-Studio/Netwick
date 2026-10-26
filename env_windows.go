@@ -76,6 +76,10 @@ func openSystem(o fixes.Opener) error {
 		return shellOpen(filepath.Join(system32(), "WF.msc"), "")
 	case fixes.OpenSystemInfo:
 		return shellOpen(filepath.Join(system32(), "msinfo32.exe"), "")
+	case fixes.OpenPower:
+		return shellOpen("ms-settings:powersleep", "")
+	case fixes.OpenGameMode:
+		return shellOpen("ms-settings:gaming-gamemode", "")
 	case fixes.OpenDeviceManager:
 		return shellOpen(filepath.Join(system32(), "devmgmt.msc"), "")
 	}

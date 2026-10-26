@@ -3,15 +3,19 @@
 
 import * as AppService from "./appservice.js";
 import * as CheckService from "./checkservice.js";
+import * as DemoService from "./demoservice.js";
 import * as FixService from "./fixservice.js";
 import * as KBService from "./kbservice.js";
+import * as ProfileService from "./profileservice.js";
 import * as ReportService from "./reportservice.js";
 import * as ToolsService from "./toolsservice.js";
 export {
     AppService,
     CheckService,
+    DemoService,
     FixService,
     KBService,
+    ProfileService,
     ReportService,
     ToolsService
 };
@@ -20,11 +24,15 @@ export type {
     AppInfo,
     ApplyOptions,
     Crosshair,
+    DemoInfo,
     FixView,
     GroupStatus,
     GuideView,
     Link,
+    NodesView,
     Outcome,
+    QualityView,
+    RebootOutcome,
     RunSummary,
     SensGame,
     SensResult,

@@ -2,11 +2,16 @@ package probe
 
 import (
 	"context"
+	"errors"
+	"io"
 	"net"
+	"net/http"
 	"sort"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/kaoriel-studio/netwick/internal/riotstatus"
 )
 
 var CoreHosts = []string{
@@ -52,6 +57,8 @@ type Network interface {
 	ResolveA(ctx context.Context, host, server string) ([]string, error)
 	SystemResolveA(ctx context.Context, host string) ([]string, error)
 	Probe(ctx context.Context, ip, host string) Result
+	FetchStatus(ctx context.Context, url string) ([]byte, error)
+	TCPPing(ctx context.Context, ip string) (time.Duration, error)
 }
 
 type RealNetwork struct {
@@ -87,6 +94,47 @@ func (n *RealNetwork) SystemResolveA(ctx context.Context, host string) ([]string
 
 func (n *RealNetwork) Probe(ctx context.Context, ip, host string) Result {
 	return Probe(ctx, ip, host, n.Config)
+}
+
+func (n *RealNetwork) TCPPing(ctx context.Context, ip string) (time.Duration, error) {
+	if net.ParseIP(ip).To4() == nil {
+		return 0, errors.New("bad address")
+	}
+	d := net.Dialer{Timeout: 2 * time.Second}
+	start := time.Now()
+	c, err := d.DialContext(ctx, "tcp", net.JoinHostPort(ip, "443"))
+	if err != nil {
+		return 0, err
+	}
+	rtt := time.Since(start)
+	_ = c.Close()
+	return rtt, nil
+}
+
+var ErrStatusURL = errors.New("status URL not allowed")
+
+func (n *RealNetwork) FetchStatus(ctx context.Context, url string) ([]byte, error) {
+	if !riotstatus.ValidURL(url) {
+		return nil, ErrStatusURL
+	}
+	ctx, cancel := context.WithTimeout(ctx, 6*time.Second)
+	defer cancel()
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("User-Agent", n.Config.UserAgent)
+	req.Header.Set("Accept", "application/json")
+	client := &http.Client{CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New(resp.Status)
+	}
+	return io.ReadAll(io.LimitReader(resp.Body, riotstatus.MaxBody))
 }
 
 func lookup4(ctx context.Context, r *net.Resolver, host string) ([]string, error) {

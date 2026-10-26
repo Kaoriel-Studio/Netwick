@@ -1,6 +1,6 @@
 import { h, icon, mount } from "./dom";
-import { t } from "./i18n";
-import { AppService, FixService } from "./api";
+import { t, has } from "./i18n";
+import { AppService, FixService, DemoService } from "./api";
 import type { AppInfo, RunSummary, Settings, UndoItem } from "./api";
 
 export type Screen = () => HTMLElement | Promise<HTMLElement>;
@@ -21,6 +21,14 @@ let onUndo: (() => void) | null = null;
 
 export function setUndoHandler(fn: () => void): void {
   onUndo = fn;
+}
+
+export function runUndo(): void {
+  if (state.undo.length === 0) {
+    toast(t("undo.nothing"));
+    return;
+  }
+  onUndo?.();
 }
 
 export async function go(screen: Screen, push = true): Promise<void> {
@@ -56,9 +64,13 @@ export async function rerender(): Promise<void> {
   await render();
 }
 
+let renderSeq = 0;
+
 async function render(): Promise<void> {
   if (!shellMain || !current) return;
+  const seq = ++renderSeq;
   const el = await current();
+  if (seq !== renderSeq) return;
   mount(shellMain, el);
   const heading = shellMain.querySelector<HTMLElement>("h1, h2");
   if (heading) {
@@ -80,11 +92,17 @@ export async function refreshUndo(): Promise<void> {
     mount(undoSlot);
     return;
   }
-  mount(undoSlot, h("button", { class: "btn btn-ghost btn-small", on: { click: () => onUndo?.() }, title: t("undo.hint") }, icon("undo"), t("undo.button", { count: state.undo.length })));
+  mount(undoSlot, h("button", { class: "btn btn-secondary btn-small", type: "button", on: { click: () => onUndo?.() }, title: t("undo.hint") }, icon("undo"), t("undo.button", { count: state.undo.length })));
 }
 
 export function openURL(url: string): void {
   AppService.OpenURL(url).catch(() => toast(t("error.open_url")));
+}
+
+export function screenHead(kicker: string, title: string, sub?: string): HTMLElement[] {
+  const out: HTMLElement[] = [h("p", { class: "kicker", text: kicker }), h("h1", { class: "screen-title", text: title })];
+  if (sub) out.push(h("p", { class: "screen-sub", text: sub }));
+  return out;
 }
 
 export function link(label: string, url: string, cls = "link"): HTMLElement {
@@ -109,29 +127,76 @@ export function applyTheme(theme: string): void {
 
 export interface ShellHandlers {
   home: () => void;
+  repair: () => void;
   tools: () => void;
   settings: () => void;
   help: () => void;
+  demoChanged: () => void;
+}
+
+const navButtons: Record<string, HTMLButtonElement> = {};
+
+export function markNav(id: string): void {
+  for (const [k, b] of Object.entries(navButtons)) {
+    if (k === id) b.setAttribute("aria-current", "page");
+    else b.removeAttribute("aria-current");
+  }
+}
+
+function navLink(id: string, iconName: string, label: string, onClick: () => void): HTMLButtonElement {
+  const b = h("button", { class: "nav-link", type: "button", title: label, aria: { label }, on: { click: () => { markNav(id); onClick(); } } }, icon(iconName), h("span", { text: label }));
+  navButtons[id] = b;
+  return b;
+}
+
+function demoBar(onChange: () => void): HTMLElement | null {
+  if (!state.info?.demo) return null;
+  const sel = h("select", { class: "input", id: "demo-scenario", aria: { label: t("demo.scenario_label") } });
+  for (const sc of state.info.scenarios ?? []) sel.appendChild(h("option", { value: sc, text: has("demo.scenario." + sc) ? t("demo.scenario." + sc) : sc }));
+  sel.value = state.info.scenario;
+  sel.addEventListener("change", async () => {
+    try {
+      const info = await DemoService.SetScenario(sel.value);
+      if (state.info) state.info.scenario = info.scenario;
+      state.last = null;
+      toast(t("demo.switched", { scenario: sel.selectedOptions[0]?.textContent ?? sel.value }));
+      onChange();
+    } catch {
+      sel.value = state.info?.scenario ?? "";
+      toast(t("demo.switch_failed"));
+    }
+  });
+  const reboot = h("button", { class: "btn btn-secondary btn-small", type: "button", on: { click: async () => {
+    reboot.disabled = true;
+    await FixService.Reboot().catch(() => null);
+    reboot.disabled = false;
+    toast(t("demo.rebooted"));
+  } } }, icon("power"), t("demo.reboot"));
+  return h("div", { class: "demo-bar", role: "region", aria: { label: t("demo.badge_short") } },
+    h("span", { class: "demo-tag", text: t("demo.badge_short") }),
+    h("label", { class: "label small", for: "demo-scenario", text: t("demo.scenario_label") }),
+    sel,
+    reboot,
+    h("span", { class: "muted small", text: t("demo.hint") }));
 }
 
 export function buildShell(root: HTMLElement, handlers: ShellHandlers): void {
   undoSlot = h("div", { class: "undo-slot" });
   shellMain = h("main", { class: "content", id: "content" });
-  const demo = state.info?.demo
-    ? h("span", { class: "demo-badge", title: t("demo.hint") }, t("demo.badge", { scenario: state.info.scenario }))
-    : null;
   const header = h("header", { class: "topbar" },
-    h("button", { class: "brand", type: "button", on: { click: handlers.home }, aria: { label: t("nav.home") } },
+    h("button", { class: "brand", type: "button", on: { click: () => { markNav("home"); handlers.home(); } }, aria: { label: t("nav.home") } },
       h("img", { class: "brand-logo", attrs: { src: "/icon.png", alt: "" } }),
       h("span", { class: "brand-name", text: "Netwick" })),
-    demo,
     h("div", { class: "topbar-spacer" }),
     undoSlot,
     h("nav", { class: "topbar-nav", aria: { label: t("nav.label") } },
-      h("button", { class: "icon-btn", type: "button", title: t("nav.tools"), aria: { label: t("nav.tools") }, on: { click: handlers.tools } }, icon("tools")),
-      h("button", { class: "icon-btn", type: "button", title: t("nav.settings"), aria: { label: t("nav.settings") }, on: { click: handlers.settings } }, icon("settings")),
-      h("button", { class: "icon-btn", type: "button", title: t("nav.help"), aria: { label: t("nav.help") }, on: { click: handlers.help } }, icon("help"))));
-  mount(root, h("a", { class: "skip-link", attrs: { href: "#content" }, text: t("nav.skip") }), header, shellMain);
+      navLink("home", "home", t("nav.home"), handlers.home),
+      navLink("repair", "wrench", t("nav.repair"), handlers.repair),
+      navLink("tools", "tools", t("nav.tools"), handlers.tools),
+      navLink("settings", "settings", t("nav.settings"), handlers.settings),
+      navLink("help", "help", t("nav.help"), handlers.help)));
+  mount(root, h("a", { class: "skip-link", attrs: { href: "#content" }, text: t("nav.skip") }), header, demoBar(handlers.demoChanged), shellMain);
+  markNav("home");
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && !document.querySelector(".modal") && canGoBack()) {
       e.preventDefault();

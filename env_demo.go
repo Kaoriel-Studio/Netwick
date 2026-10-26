@@ -61,6 +61,13 @@ func buildEnv(args []string) (*app.Env, []string, func(), error) {
 			return nil
 		},
 		Simulate: sys.SimulateGuide,
+		ResetDemo: func(name string) bool {
+			if !fake.Valid(name) {
+				return false
+			}
+			sys.Reset(name)
+			return true
+		},
 	}
 	return env, fake.Scenarios, func() { _ = os.RemoveAll(dataDir) }, nil
 }

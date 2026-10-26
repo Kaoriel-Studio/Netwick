@@ -25,9 +25,13 @@ const (
 	VAN68          = "van-68"
 	VAN128         = "van-128"
 	OldHosts       = "old-hosts-entries"
+	VAL43          = "val-43"
+	RiotIncident   = "riot-incident"
+	LaptopSaver    = "laptop-saver"
+	WifiNoise      = "wifi-noise"
 )
 
-var Scenarios = []string{AllOK, OwnerRealRun, NoInternet, ISPCutsSomeIPs, TPMOffWin11, SecureBootOff, VGCDisabled, FirewallBlocks, VPNOn, VAN68, VAN128, OldHosts}
+var Scenarios = []string{AllOK, VAL43, OwnerRealRun, NoInternet, ISPCutsSomeIPs, RiotIncident, LaptopSaver, WifiNoise, TPMOffWin11, SecureBootOff, VGCDisabled, FirewallBlocks, VPNOn, VAN68, VAN128, OldHosts}
 
 func Valid(name string) bool {
 	for _, s := range Scenarios {
@@ -45,6 +49,13 @@ const (
 	vgcExe      = `C:\Program Files\Riot Vanguard\vgc.exe`
 	wifiLUID    = 0x47000000000001
 	ethLUID     = 0x6000000000002
+)
+
+const (
+	riotClientLocal = userProfile + `\AppData\Local\Riot Games\Riot Client`
+	logDir          = riotClientLocal + `\Logs\Riot Client Logs`
+	clearStatus     = `{"id":"EU","name":"Europe","maintenances":[],"incidents":[]}`
+	incidentStatus  = `{"id":"EU","name":"Europe","maintenances":[],"incidents":[{"titles":[{"locale":"en_US","content":"Players may be unable to log in or may experience disconnects"},{"locale":"ru_RU","content":"Игроки могут не входить в игру или терять соединение"}]}]}`
 )
 
 const defaultHosts = "# Copyright (c) 1993-2009 Microsoft Corp.\r\n#\r\n# This is a sample HOSTS file used by Microsoft TCP/IP for Windows.\r\n#\r\n# localhost name resolution is handled within DNS itself.\r\n#\t127.0.0.1       localhost\r\n#\t::1             localhost\r\n127.0.0.1 local.example-tool.test\r\n"
@@ -132,6 +143,7 @@ func New(scenario string) *System {
 		ips:       ips,
 		crashDump: platform.RegDWORD{Exists: true, Value: 7},
 		dhcp:      map[uint64]bool{ethLUID: true, wifiLUID: true},
+		power:     platform.PowerInfo{Plan: platform.PlanHigh, OnBattery: platform.No, GameMode: platform.Yes},
 	}
 	s.putFile(`C:\ProgramData\Riot Games\RiotClientInstalls.json`, `{"associated_client":{"E:/Riot Games/VALORANT/live/":"C:/Riot Games/Riot Client/RiotClientServices.exe"},"patchlines":{"KeystoneFoundationLiveWin":"C:/Riot Games/Riot Client/RiotClientServices.exe"},"rc_default":"C:/Riot Games/Riot Client/RiotClientServices.exe","rc_live":"C:/Riot Games/Riot Client/RiotClientServices.exe"}`, now)
 	s.putFile(`C:\ProgramData\Riot Games\Metadata\valorant.live\valorant.live.product_settings.yaml`, "product_install_full_path: \"E:/Riot Games/VALORANT/live\"\nproduct_install_root: \"E:/Riot Games\"\n", now)
@@ -139,7 +151,14 @@ func New(scenario string) *System {
 	s.putFile(gameDir+`\VALORANT.exe`, "MZ", now)
 	s.putFile(vgcExe, "MZ", now)
 	s.putFile(hostsPath, defaultHosts, now)
-	s.putFile(userProfile+`\AppData\Local\Riot Games\Riot Client\Logs\Riot Client Logs\2026-10-25T20-11-02_1234_Riot Client.log`, logLines("", 0, now.Add(-2*time.Hour)), now.Add(-2*time.Hour))
+	s.putFile(logDir+`\2026-10-25T20-11-02_1234_Riot Client.log`, logLines("", 0, now.Add(-2*time.Hour)), now.Add(-2*time.Hour))
+	s.putFile(riotClientLocal+`\Cache\data_0`, "cache", now)
+	s.putFile(riotClientLocal+`\Cache\index`, "cache", now)
+	s.putFile(riotClientLocal+`\Crashpad\settings.dat`, "crashpad", now)
+	s.putFile(userProfile+`\AppData\Local\VALORANT\Saved\Crashes\crash-1\report.txt`, "crash", now)
+	s.putFile(riotClientLocal+`\Data\RiotGamesPrivateSettings.yaml`, "session", now)
+	s.putFile(riotClientLocal+`\Config\RiotClientSettings.yaml`, "settings", now)
+	s.status = map[string]string{"valorant": clearStatus, "riot_client": clearStatus}
 
 	switch scenario {
 	case OwnerRealRun:
@@ -154,7 +173,7 @@ func New(scenario string) *System {
 		s.ips["104.18.40.11"] = ipState{status: probe.StatusNoTLS, cause: probe.CauseTimeout}
 		s.ips["104.18.41.11"] = ipState{status: probe.StatusNoTLS, cause: probe.CauseTimeout}
 		s.putFile(hostsPath, defaultHosts+"\r\n# >>> CYPHERLINK-ROUTE >>> (added by CypherLink)\r\n104.16.56.21     entitlements.auth.riotgames.com\r\n104.18.157.37    clientconfig.rpg.riotgames.com\r\n104.16.120.50    auth.riotgames.com\r\n# <<< CYPHERLINK-ROUTE <<<\r\n", now)
-		s.putFile(userProfile+`\AppData\Local\Riot Games\Riot Client\Logs\Riot Client Logs\2026-10-25T21-40-10_5678_Riot Client.log`, logLines("data.riotgames.com", 63, now.Add(-time.Hour)), now.Add(-time.Hour))
+		s.putFile(logDir+`\2026-10-25T21-40-10_5678_Riot Client.log`, logLines("data.riotgames.com", 63, now.Add(-time.Hour)), now.Add(-time.Hour))
 	case NoInternet:
 		s.dnsOK = false
 	case ISPCutsSomeIPs:
@@ -163,7 +182,7 @@ func New(scenario string) *System {
 				s.ips[ip] = ipState{status: probe.StatusStalled, cause: probe.CauseTimeout}
 			}
 		}
-		s.putFile(userProfile+`\AppData\Local\Riot Games\Riot Client\Logs\Riot Client Logs\2026-10-25T21-40-10_5678_Riot Client.log`, logLines("valorant.secure.dyn.riotcdn.net", 12, now.Add(-time.Hour)), now.Add(-time.Hour))
+		s.putFile(logDir+`\2026-10-25T21-40-10_5678_Riot Client.log`, logLines("valorant.secure.dyn.riotcdn.net", 12, now.Add(-time.Hour)), now.Add(-time.Hour))
 	case TPMOffWin11:
 		s.tpm = platform.TPMInfo{Present: platform.No}
 		s.dg.DMAProtection = platform.No
@@ -183,6 +202,23 @@ func New(scenario string) *System {
 	case VAN128:
 		s.pending = platform.PendingReboot{WindowsUpdate: true}
 		s.crashDump = platform.RegDWORD{Exists: true, Value: 7}
+	case VAL43:
+		s.pools["valorant.secure.dyn.riotcdn.net"] = []string{"65.9.46.9", "65.9.46.10", "65.9.46.11", "65.9.46.12"}
+		s.pools["clientconfig.rpg.riotgames.com"] = []string{"104.18.155.37", "104.18.156.37", "104.18.157.37"}
+		s.ips["65.9.46.9"] = ipState{status: probe.StatusStalled, cause: probe.CauseTimeout}
+		s.ips["104.18.155.37"] = ipState{status: probe.StatusStalled, cause: probe.CauseReset}
+		s.services["bonjour service"] = platform.ServiceInfo{Name: "Bonjour Service", DisplayName: "Bonjour Service", Exists: true, State: platform.StateRunning, StartType: platform.StartAutomatic}
+		s.procs = append(s.procs, platform.Process{PID: 2210, Name: "RiotClientServices.exe"}, platform.Process{PID: 2290, Name: "RiotClientUxRender.exe"})
+		s.putFile(logDir+`\2026-10-25T21-40-10_5678_Riot Client.log`, logLines("valorant.secure.dyn.riotcdn.net", 17, now.Add(-time.Hour))+logLines("clientconfig.rpg.riotgames.com", 9, now.Add(-time.Hour)), now.Add(-time.Hour))
+	case RiotIncident:
+		s.status["valorant"] = incidentStatus
+	case LaptopSaver:
+		s.power = platform.PowerInfo{Plan: platform.PlanPowerSaver, OnBattery: platform.Yes, GameMode: platform.No}
+	case WifiNoise:
+		s.adapters[0].Up = false
+		s.adapters[1].Up = true
+		s.adapters[1].HasGateway = true
+		s.adapters[1].DNS = []string{"192.168.1.1"}
 	case OldHosts:
 		s.putFile(hostsPath, defaultHosts+"\r\n# >>> NETWICK >>> (managed routes, added 2026-03-01 — safe to delete)\r\n65.9.46.11         valorant.secure.dyn.riotcdn.net\r\n# <<< NETWICK <<<\r\n# >>> CYPHERLINK-CDN >>>\r\n104.16.120.50 auth.riotgames.com\r\n# <<< CYPHERLINK-CDN <<<\r\n", now)
 		s.ips["65.9.46.11"] = ipState{status: probe.StatusNoTLS, cause: probe.CauseTimeout}

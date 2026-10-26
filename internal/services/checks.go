@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"errors"
+	"path/filepath"
 	"sort"
 	"sync"
 	"time"
@@ -10,6 +11,7 @@ import (
 	"github.com/kaoriel-studio/netwick/internal/app"
 	"github.com/kaoriel-studio/netwick/internal/checks"
 	"github.com/kaoriel-studio/netwick/internal/core"
+	"github.com/kaoriel-studio/netwick/internal/profile"
 	"github.com/kaoriel-studio/netwick/internal/verdict"
 )
 
@@ -19,6 +21,10 @@ type Emitter func(name string, data any)
 
 type State struct {
 	mu      sync.Mutex
+	nodesMu sync.Mutex
+	fixMu   sync.Mutex
+	qualMu  sync.Mutex
+	Prof    *profile.Store
 	Env     *app.Env
 	Store   *app.Store
 	Emit    Emitter
@@ -38,7 +44,11 @@ type FixRecord struct {
 }
 
 func NewState(env *app.Env, store *app.Store) *State {
-	return &State{Env: env, Store: store, results: map[string]core.Result{}, Emit: func(string, any) {}}
+	profilePath := ""
+	if env.DataDir != "" {
+		profilePath = filepath.Join(env.DataDir, "profile.json")
+	}
+	return &State{Env: env, Store: store, Prof: profile.Open(profilePath), results: map[string]core.Result{}, Emit: func(string, any) {}}
 }
 
 func (s *State) Results() map[string]core.Result {
@@ -103,7 +113,7 @@ func (c *CheckService) Run(mode string, focus string) (*RunSummary, error) {
 }
 
 func (c *CheckService) RunOnly(ids []string) (*RunSummary, error) {
-	if len(ids) == 0 || len(ids) > 21 {
+	if len(ids) == 0 || len(ids) > len(checks.All()) {
 		return nil, ErrInvalid
 	}
 	for _, id := range ids {
@@ -182,6 +192,9 @@ func (s *State) run(mode, focus string, only []string) (*RunSummary, error) {
 	s.ranAt = time.Now()
 	v := s.verdict
 	s.mu.Unlock()
+	if only == nil && mode == ModeFull && !cancelled {
+		s.Prof.RecordRun(merged, s.verdictOf(merged, focus))
+	}
 
 	shown := res
 	if only == nil && mode == ModeFull {
@@ -214,4 +227,8 @@ func summarize(mode, focus string, res map[string]core.Result, v verdict.Verdict
 		}
 	}
 	return sum
+}
+
+func (s *State) verdictOf(res map[string]core.Result, focus string) verdict.Verdict {
+	return verdict.Overall(res, focus)
 }

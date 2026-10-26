@@ -1,11 +1,11 @@
-import { h, icon, mount } from "../dom";
+import { h, icon, mount, countUp } from "../dom";
 import { t, dateTime } from "../i18n";
-import { link, toast, backButton, state } from "../app";
+import { link, toast, backButton, state, screenHead } from "../app";
 import { CheckService, ToolsService } from "../api";
-import type { Crosshair, Result } from "../api";
+import type { Crosshair, Result, QualityView } from "../api";
 import { resultLine, launchGame, resultParams } from "./check";
 
-const TABS = ["ready", "ondemand", "crosshair", "sens", "connection", "links"] as const;
+const TABS = ["ready", "quality", "ondemand", "crosshair", "sens", "connection", "links"] as const;
 type Tab = typeof TABS[number];
 
 export function toolsScreen(initial: Tab = "ready"): HTMLElement {
@@ -34,12 +34,13 @@ export function toolsScreen(initial: Tab = "ready"): HTMLElement {
     return b;
   }));
   select(initial);
-  return h("section", { class: "screen tools" }, backButton(), h("h1", { class: "screen-title", text: t("tools.title") }), list, panel);
+  return h("section", { class: "screen tools" }, backButton(), ...screenHead(t("tools.kicker"), t("tools.title")), list, panel);
 }
 
 function render(tab: Tab): HTMLElement {
   switch (tab) {
     case "ready": return readyTool();
+    case "quality": return qualityTool();
     case "ondemand": return onDemandTool();
     case "crosshair": return crosshairTool();
     case "sens": return sensTool();
@@ -216,4 +217,82 @@ function linksTool(): HTMLElement {
   const list = h("ul", { class: "link-list" });
   void ToolsService.Links().then((links) => mount(list, (links ?? []).map((l) => h("li", null, link(t("links." + l.id), l.url))))).catch(() => undefined);
   return h("div", { class: "card" }, h("h2", { class: "section-title", text: t("tools.links.title") }), list, state.info?.demo ? h("p", { class: "muted small", text: t("tools.links.demo") }) : null);
+}
+
+function grade(q: QualityView): "great" | "ok" | "bad" | "down" {
+  if ((q.samples ?? []).length === 0 || q.loss >= 100) return "down";
+  if (q.loss >= 10 || q.jitter > 40 || q.avg > 150) return "bad";
+  if (q.loss > 0 || q.jitter > 15 || q.avg > 80) return "ok";
+  return "great";
+}
+
+function stat(label: string, value: string, num?: number): HTMLElement {
+  const v = h("span", { class: "stat-value", text: value });
+  if (num !== undefined) {
+    v.textContent = "0";
+    countUp(v, num, 700);
+    const unit = value.slice(String(num).length);
+    if (unit) v.dataset.unit = unit;
+  }
+  return h("div", { class: "stat" }, h("span", { class: "stat-value-row" }, v, num !== undefined && value.length > String(num).length ? h("span", { class: "stat-unit", text: value.slice(String(num).length) }) : null), h("span", { class: "stat-label", text: label }));
+}
+
+function qualityResult(raw: QualityView, wifi: boolean): HTMLElement[] {
+  const q = { ...raw, samples: raw.samples ?? [] };
+  const g = grade(q);
+  const level = g === "great" ? "green" : g === "ok" ? "yellow" : "red";
+  if (q.samples.length === 0) {
+    return [h("p", { class: "notice notice-fail", text: q.ip ? t("quality.grade.down") : t("tools.quality.no_address") })];
+  }
+  const top = Math.max(120, ...q.samples);
+  const bars = h("div", { class: "bars", role: "img", aria: { label: t("tools.quality.chart") } }, q.samples.map((ms, i) => {
+    const bar = h("span", { class: "bar " + (ms < 0 ? "lost" : ms > 150 ? "bad" : ms > Math.max(80, q.avg * 1.6) ? "mid" : ""), title: ms < 0 ? t("tools.quality.loss") : ms + " ms" });
+    bar.style.setProperty("--i", String(i));
+    if (ms >= 0) bar.style.height = Math.max(6, Math.round((ms / top) * 100)) + "%";
+    return bar;
+  }));
+  const tips: string[] = [];
+  if (wifi && g !== "great") tips.push(t("quality.tip.wifi"));
+  if (q.loss > 0) tips.push(t("quality.tip.loss"));
+  if (g === "bad") tips.push(t("quality.tip.run_fix"));
+  if (g === "great") tips.push(t("quality.tip.fine"));
+  return [
+    h("p", { class: "verdict-inline verdict-" + level, text: t("quality.grade." + g) }),
+    h("div", { class: "quality" },
+      stat(t("tools.quality.delay"), q.avg + " ms", q.avg),
+      stat(t("tools.quality.best"), q.min + " ms", q.min),
+      stat(t("tools.quality.worst"), q.max + " ms", q.max),
+      stat(t("tools.quality.jitter"), q.jitter + " ms", q.jitter),
+      stat(t("tools.quality.loss"), q.loss + " %", q.loss)),
+    bars,
+    h("p", { class: "muted small", text: t("tools.quality.chart") }),
+    h("ul", { class: "tips" }, tips.map((x) => h("li", { text: x }))),
+  ];
+}
+
+function qualityTool(): HTMLElement {
+  const out = h("div", { class: "quality-out", aria: { live: "polite" } });
+  const sel = h("select", { class: "input", id: "q-host" });
+  void ToolsService.QualityHosts().then((hosts) => {
+    for (const x of hosts ?? []) sel.appendChild(h("option", { value: x, text: x }));
+  });
+  const btn = h("button", { class: "btn btn-primary", type: "button" }, icon("signal"), t("tools.quality.button"));
+  btn.addEventListener("click", async () => {
+    btn.disabled = true;
+    mount(out, spinner(t("tools.quality.running")));
+    try {
+      const [q, c13] = await Promise.all([ToolsService.Quality(sel.value), CheckService.RunOnly(["C13"]).catch(() => null)]);
+      const wifi = c13?.results?.find((r) => r.checkId === "C13")?.messageKey === "conn.wifi";
+      mount(out, ...(q ? qualityResult(q, wifi) : [h("p", { class: "notice notice-fail", text: t("tools.quality.failed") })]));
+    } catch {
+      mount(out, h("p", { class: "notice notice-fail", text: t("tools.quality.failed") }));
+    }
+    btn.disabled = false;
+    btn.lastChild!.textContent = t("tools.quality.again");
+  });
+  return h("div", { class: "card" },
+    h("h2", { class: "section-title", text: t("tools.quality.title") }),
+    h("p", { class: "muted", text: t("tools.quality.text") }),
+    h("div", { class: "row wrap" }, h("label", { class: "label", for: "q-host", text: t("tools.quality.host") }), sel, btn),
+    out);
 }
