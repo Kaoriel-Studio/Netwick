@@ -39,6 +39,21 @@ Bonjour, Vanguard reinstall, removing routes and undo. Before a scenario starts 
 
 See also [Riot's rules on third-party applications](https://support.riotgames.com/en-us/valorant/account/third-party-applications).
 
+## Disclaimer
+
+Netwick is provided **"as is", without warranty of any kind**, as stated in the [MIT license](LICENSE).
+Netwick changes Windows settings (network, services, the `hosts` file) and deletes Riot Client cache and sign-in files
+**only when you confirm a step**, and it explains every step first. Even so, any change to a computer carries some risk.
+
+- You use Netwick **at your own risk**. The authors are not liable for any loss or damage, including data loss,
+  a computer that stops working or starting, network or internet problems, lost settings, account problems,
+  sanctions from game publishers, or any other direct or indirect damage.
+- Not every change can be undone. Steps marked "cannot be undone" (for example the network reset) stay in effect.
+- Read what each step does before you press "Do it for me". If you are not sure, choose "Show me how to do it myself"
+  or skip the step. Save your work before steps that need a restart.
+- Netwick does not guarantee that a problem will be fixed, and it cannot fix problems on Riot's side.
+- Netwick is an independent project and is not endorsed by or affiliated with Riot Games, Microsoft or any other company.
+
 ## Install
 
 **Requirements:** Windows 10 (build 19041+) or Windows 11, x64, Microsoft Edge WebView2
